@@ -29,7 +29,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
-// Pertemuan 6: Fitur Pelengkap CRUD
+// Pertemuan 8: Fitur Pelengkap CRUD (Operasi Data Buku, Searching, Validasi, Pagination, dan Flash Message)
 Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
 Route::get('/buku', [BukuController::class, 'index'])->name('buku.index');
 Route::get('/buku/create', [BukuController::class, 'create'])->name('buku.create');
