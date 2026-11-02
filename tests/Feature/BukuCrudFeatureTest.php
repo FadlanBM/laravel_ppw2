@@ -15,6 +15,9 @@ class BukuCrudFeatureTest extends TestCase
         parent::setUp();
         \Database\Seeders\BukuSeeder::class;
         $this->seed(\Database\Seeders\BukuSeeder::class);
+
+        $user = \App\Models\User::factory()->create();
+        $this->actingAs($user);
     }
 
     public function test_index_page_displays_books_and_pagination(): void
