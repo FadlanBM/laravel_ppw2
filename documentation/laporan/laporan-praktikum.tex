@@ -1,0 +1,691 @@
+\documentclass[12pt,a4paper]{article}
+
+% ======================================================================
+% Laporan Praktikum Pemrograman Web 2 - Pertemuan 3 (File Upload)
+% Fadlan Buwono Mukti - 25/565721/SV/26984
+% ======================================================================
+
+\usepackage{fontspec}
+\usepackage[bahasa]{babel}
+
+\setmainfont{texgyretermes}[
+  Extension=.otf,
+  UprightFont=*-regular,
+  BoldFont=*-bold,
+  ItalicFont=*-italic,
+  BoldItalicFont=*-bolditalic,
+]
+\setmonofont{texgyrecursor}[
+  Extension=.otf,
+  UprightFont=*-regular,
+  BoldFont=*-bold,
+  Scale=0.92,
+]
+\usepackage[a4paper,left=4cm,right=3cm,top=3cm,bottom=3cm]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{fancyhdr}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{../screenshots/}{./}}
+
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+% ---------- Judul bab dan subbab ----------
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+\titleformat{\section}[block]{\centering\bfseries\large}{BAB \thesection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{0pt}{14pt}
+
+\titleformat{\subsection}[block]{\bfseries\normalsize}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{14pt}{6pt}
+
+\titleformat{\subsubsection}[block]{\centering\bfseries\normalsize}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+
+% ---------- Nomor gambar, tabel, dan listing per bab ----------
+\makeatletter
+\@addtoreset{figure}{section}
+\@addtoreset{table}{section}
+\@addtoreset{lstlisting}{section}
+\makeatother
+
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+\renewcommand{\thetable}{\thesection.\arabic{table}}
+\AtBeginDocument{%
+  \renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}%
+}
+
+\captionsetup{font=normalsize,labelsep=colon,justification=centering,skip=6pt}
+
+% ---------- Daftar isi ----------
+\renewcommand{\contentsname}{DAFTAR ISI}
+\renewcommand{\cfttoctitlefont}{\hfill\bfseries\large}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\cftsecfont}{\bfseries}
+\renewcommand{\cftsecpresnum}{BAB~}
+\renewcommand{\cftsecaftersnum}{.}
+\setlength{\cftsecnumwidth}{2.9em}
+\renewcommand{\cftsecpagefont}{\bfseries}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftsecindent}{0pt}
+\setlength{\cftsubsecindent}{1.6em}
+\setlength{\cftsubsubsecindent}{3.2em}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{18pt}
+
+% ---------- Header dan footer ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+% ---------- Gaya listing kode ----------
+\definecolor{kodebg}{gray}{0.96}
+\definecolor{kodeframe}{gray}{0.72}
+\definecolor{kodecomment}{rgb}{0.35,0.45,0.35}
+
+\lstdefinestyle{php}{
+  language=PHP,
+  backgroundcolor=\color{kodebg},
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\color{kodecomment}\itshape,
+  keywordstyle=\bfseries,
+  stringstyle=\ttfamily,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=6pt,
+  captionpos=t,
+  float=t,
+  frame=single,
+  rulecolor=\color{kodeframe},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=4,
+  xleftmargin=12pt,
+  xrightmargin=4pt,
+  aboveskip=8pt,
+  belowskip=8pt,
+}
+\lstset{style=php}
+\renewcommand{\lstlistingname}{Listing}
+
+\newcommand{\screenshot}[3][\textwidth]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=#1]{\detokenize{#2}}
+    \caption{#3}
+    \label{fig:#2}
+  \end{figure}
+}
+
+\begin{document}
+
+% ======================================================================
+% HALAMAN JUDUL
+% ======================================================================
+\pagenumbering{gobble}
+\begin{titlepage}
+  \centering
+  \vspace*{0.6cm}
+
+  {\bfseries\large LAPORAN PRAKTIKUM}\\[0.35cm]
+  {\bfseries\large PEMROGRAMAN WEB 2}\\[0.6cm]
+  {\bfseries\large PERTEMUAN 3}\\[0.35cm]
+  {\bfseries\large FILE UPLOAD}\\[0.9cm]
+
+  \includegraphics[width=5.4cm]{ugm-logo.png}\\[1.1cm]
+
+  \begin{tabular}{@{}l@{\hspace{0.6cm}}l@{}}
+    Nama            & : Fadlan Buwono Mukti \\
+    NIM             & : 25/565721/SV/26984 \\
+    Kelas           & : A1 \\
+    Dosen Pengampu  & : Ir. Dinar Nugroho Pratomo, S.Kom., M.IM., M.Cs. \\
+  \end{tabular}
+
+  \vfill
+
+  {\bfseries\small PROGRAM STUDI D-IV TEKNOLOGI REKAYASA PERANGKAT LUNAK}\\[0.25cm]
+  {\bfseries\small DEPARTEMEN TEKNIK ELEKTRO DAN INFORMATIKA}\\[0.25cm]
+  {\bfseries\small SEKOLAH VOKASI}\\[0.25cm]
+  {\bfseries\small UNIVERSITAS GADJAH MADA}\\[0.25cm]
+  {\bfseries\small YOGYAKARTA}\\[0.25cm]
+  {\bfseries\small 2026}
+\end{titlepage}
+
+% ======================================================================
+% DAFTAR ISI
+% ======================================================================
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\tableofcontents
+\thispagestyle{plain}
+\clearpage
+
+% ======================================================================
+\section{Tujuan Praktikum}
+% ======================================================================
+
+Praktikum pertemuan ketiga berfokus pada penanganan berkas yang diunggah pengguna di dalam alur CRUD Laravel. Target yang ingin dicapai pada pertemuan ini adalah sebagai berikut.
+
+\begin{enumerate}[leftmargin=1.4cm, itemsep=4pt]
+  \item Mahasiswa memahami siklus CRUD (create, read, update, delete) sebagai pola dasar pengelolaan data pada aplikasi web berbasis Laravel.
+  \item Mahasiswa mampu membuat tabel \texttt{job\_vacancies} melalui migration dan menghubungkannya dengan model Eloquent.
+  \item Mahasiswa dapat menampilkan daftar lowongan kerja dari basis data ke halaman web.
+  \item Mahasiswa mampu menambahkan lowongan baru lengkap dengan unggahan logo perusahaan.
+  \item Mahasiswa dapat mengedit dan menghapus lowongan, termasuk membersihkan berkas logo yang sudah tidak dipakai.
+  \item Mahasiswa memahami peran middleware dalam membatasi pengelolaan data hanya untuk akun administrator.
+\end{enumerate}
+
+% ======================================================================
+\section{Dasar Teori}
+% ======================================================================
+
+\subsection{Siklus CRUD pada Aplikasi Web}
+
+Hampir semua aplikasi pengelolaan data berdiri di atas empat operasi yang sama: menyimpan data baru, menampilkan data yang tersimpan, memperbarui data lama, dan menghapus data yang tidak lagi diperlukan. Keempat operasi itu dikenal sebagai CRUD \cite{fowler2003}. Pada portal lowongan kerja, admin menambah lowongan baru, pengunjung membaca daftar lowongan, admin mengubah nominal gaji, dan admin menghapus lowongan yang sudah ditutup. Pola yang sama berulang di sistem akademik, toko daring, hingga aplikasi inventaris gudang.
+
+Laravel memecah siklus tersebut ke dalam beberapa komponen yang saling bergantung. Migration menyiapkan struktur tabel, model menjadi penghubung antara tabel dan kode PHP, controller mengatur alur permintaan, dan view menampilkan hasilnya ke peramban. Pemisahan ini memudahkan penelusuran kesalahan karena setiap lapisan punya tanggung jawab yang jelas \cite{laravel2026controllers}.
+
+\subsection{Migration dan Model Eloquent}
+
+Migration adalah berkas PHP yang mendeskripsikan perubahan skema basis data dalam bentuk kode, sehingga struktur tabel dapat dibuat ulang pada mesin lain tanpa menulis SQL secara manual \cite{laravel2026migrations}. Perintah \texttt{php artisan make:model JobVacancy -m} menghasilkan dua berkas sekaligus: kelas model dan berkas migration bertanda waktu pembuatan.
+
+Model Eloquent memetakan satu kelas PHP ke satu tabel. Konvensi penamaan Laravel mengubah nama kelas menjadi bentuk jamak, misalnya \texttt{JobVacancy} menjadi \texttt{job\_vacancies}. Properti \texttt{\$table} dipakai untuk menegaskan nama tabel secara eksplisit, sedangkan \texttt{\$fillable} menentukan kolom yang boleh diisi melalui mass assignment \cite{laravel2026eloquent}. Tanpa \texttt{\$fillable} yang benar, pemanggilan \texttt{create()} akan melempar \texttt{MassAssignmentException} saat pengujian.
+
+\subsection{Resource Controller dan Validasi Masukan}
+
+Controller berperan sebagai penghubung antara permintaan HTTP dan logika aplikasi. Pembuatan controller dengan opsi \texttt{--resource} menyiapkan tujuh method standar sekaligus: \texttt{index}, \texttt{create}, \texttt{store}, \texttt{show}, \texttt{edit}, \texttt{update}, dan \texttt{destroy} \cite{laravel2026controllers}. Pola ini menjaga penamaan method tetap konsisten di seluruh modul sehingga pembaca kode tidak perlu menebak nama fungsi.
+
+Data yang masuk dari formulir tidak boleh langsung dipercaya. Method \texttt{\$request->validate()} memeriksa tipe, panjang, dan keberadaan nilai sebelum data disimpan. Bila validasi gagal, Laravel mengembalikan pengguna ke halaman form sebelumnya bersama daftar galat dan nilai lama melalui helper \texttt{old()}. Pada praktikum ini pesan galat ditulis dalam bahasa Indonesia agar pengguna langsung memahami bagian mana yang perlu diperbaiki.
+
+\subsection{Blade sebagai Lapisan Tampilan}
+
+Blade adalah mesin templat Laravel yang memungkinkan penulisan struktur HTML dengan potongan sintaks kontrol seperti \texttt{@if}, \texttt{@foreach}, dan \texttt{@forelse}. Berkas Blade dikompilasi menjadi PHP biasa dan disimpan pada direktori cache, sehingga tidak menambah beban berarti saat halaman dimuat \cite{laravel2026blade}. Salah satu kemudahan yang sering dipakai adalah pewarisan layout melalui \texttt{@extends} dan \texttt{@section}, yang membuat satu berkas induk dapat dipakai ulang oleh banyak halaman.
+
+Untuk kebutuhan khusus seperti formulir unggah berkas, atribut \texttt{enctype="multipart/form-data"} wajib disertakan pada elemen form. Tanpa atribut tersebut, peramban mengirim isi berkas sebagai teks biasa dan server hanya menerima nilai kosong pada variabel \texttt{\$\_FILES}.
+
+\subsection{Unggah Berkas dan Storage Link}
+
+Laravel menyediakan abstraksi filesystem melalui facade \texttt{Storage}. Berkas yang diunggah dapat disimpan memakai disk \texttt{public} dengan pemanggilan \texttt{\$request->file('logo')->store('logos', 'public')} \cite{laravel2026filesystem}. Method \texttt{store()} menghasilkan nama berkas acak yang aman dari tabrakan nama, lalu mengembalikan jalur relatif berkas tersebut untuk disimpan pada kolom basis data.
+
+Berkas yang berada di direktori \texttt{storage/app/public} belum dapat diakses langsung dari peramban. Perintah \texttt{php artisan storage:link} membuat symbolic link dari \texttt{public/storage} menuju direktori tersebut sehingga URL \texttt{/storage/logos/nama-berkas.png} dapat dibuka oleh pengguna. Pembersihan berkas juga perlu dipikirkan: ketika logo diganti atau data dihapus, berkas lama harus dihapus melalui \texttt{Storage::disk('public')->delete()} agar direktori tidak dipenuhi berkas yatim.
+
+\subsection{Middleware sebagai Penjaga Rute}
+
+Middleware memeriksa permintaan sebelum permintaan itu mencapai controller \cite{laravel2026middleware}. Pada aplikasi ini terdapat dua lapis pemeriksaan. Middleware \texttt{auth} memastikan pengguna sudah login, sedangkan middleware \texttt{isAdmin} memastikan level pengguna adalah administrator. Keduanya didaftarkan sebagai alias pada berkas \texttt{bootstrap/app.php} dan dipasang pada definisi rute.
+
+Pemisahan pemeriksaan ke dalam middleware membuat controller tetap ringkas. Controller tidak perlu memuat kode pengecekan hak akses berulang di setiap method, dan aturan akses cukup diubah pada satu tempat bila kebijakan berubah di kemudian hari.
+
+% ======================================================================
+\section{Hasil dan Pembahasan}
+% ======================================================================
+
+Pengerjaan pertemuan ini menghasilkan modul portal lowongan kerja yang berdiri di atas proyek praktikum sebelumnya. Struktur proyek, mekanisme autentikasi, dan modul data buku tetap dipertahankan, lalu ditambahkan entitas baru bernama \texttt{job\_vacancies} beserta seluruh lapisan pendukungnya. Bagian ini memaparkan pengerjaan tiga butir tugas praktikum, tujuh langkah latihan modul, dan pengujian fungsional yang dilakukan terhadap hasil implementasi.
+
+\subsection{Pengerjaan Tugas Praktikum}
+
+Modul pertemuan ini menutup tiga butir tugas: penambahan kolom jenis pekerjaan, perubahan tampilan daftar lowongan menjadi kartu, serta pelengkapan fitur edit, update, dan hapus. Ketiganya dikerjakan bersamaan dengan langkah latihan karena saling bergantung pada tabel dan controller yang sama.
+
+\subsubsection{Butir 1: Kolom Jenis Pekerjaan pada Tabel Lowongan}
+
+Tugas pertama meminta tambahan kolom jenis pekerjaan dengan dua pilihan, penuh waktu atau paruh waktu. Penulis memperluas pilihan tersebut menjadi empat nilai agar sejalan dengan kebutuhan portal lowongan nyata: \texttt{full-time}, \texttt{part-time}, \texttt{contract}, dan \texttt{internship}. Kolom dibuat sebagai enum pada migration supaya nilai yang tidak dikenal ditolak sejak tingkat basis data.
+
+\begin{lstlisting}[caption={Definisi kolom \texttt{job\_type} pada migration \texttt{create\_job\_vacancies\_table}}, label={lst:migrasi}]
+Schema::create('job_vacancies', function (Blueprint $table) {
+    $table->id();
+    $table->string('title');
+    $table->text('description');
+    $table->string('location');
+    $table->string('company');
+    $table->string('logo')->nullable();
+    $table->integer('salary')->nullable();
+    $table->enum('job_type', [
+        'full-time', 'part-time', 'contract', 'internship',
+    ])->default('full-time');
+    $table->timestamps();
+});
+\end{lstlisting}
+
+Nilai enum tersebut kemudian diterjemahkan menjadi label dan warna badge melalui dua accessor pada model. Pendekatan ini memindahkan urusan tampilan ke model sehingga view tidak dipenuhi rangkaian kondisi berulang.
+
+\begin{lstlisting}[caption={Accessor label dan badge jenis pekerjaan pada \texttt{JobVacancy}}, label={lst:accessor}]
+public function getJobTypeLabelAttribute(): string
+{
+    return match ($this->job_type) {
+        'full-time' => 'Full-time',
+        'part-time' => 'Part-time',
+        'contract' => 'Kontrak',
+        'internship' => 'Magang',
+        default => ucfirst((string) $this->job_type),
+    };
+}
+
+public function getJobTypeBadgeAttribute(): string
+{
+    return match ($this->job_type) {
+        'full-time' => 'bg-primary',
+        'part-time' => 'bg-warning text-dark',
+        'contract' => 'bg-info text-dark',
+        'internship' => 'bg-success',
+        default => 'bg-secondary',
+    };
+}
+\end{lstlisting}
+
+Kolom jenis pekerjaan juga muncul pada formulir tambah dan edit berupa elemen \texttt{<select>} yang dibangun dari array pasangan nilai dan label. Pilihan terakhir pengguna dipertahankan melalui \texttt{old()} ketika validasi gagal, sehingga pengguna tidak perlu memilih ulang.
+
+Setelah migration dijalankan, struktur tabel diperiksa langsung melalui klien SQLite. Hasil pemeriksaan pada Listing~\ref{lst:sqlite} menunjukkan bahwa kedelapan data awal memiliki jenis pekerjaan yang berbeda-beda, dan kolom gaji pada satu data dibiarkan kosong untuk menguji penanganan nilai \texttt{null}.
+
+\begin{lstlisting}[caption={Hasil pemeriksaan isi tabel \texttt{job\_vacancies} melalui sqlite3}, label={lst:sqlite}, language={}]
+sqlite> select id, title, company, job_type, salary, logo
+   ...> from job_vacancies order by id;
+
+1 | Backend Developer (Laravel) | PT Nusantara Digital | full-time  | 8500000  | logos/nusantara-digital.png
+2 | UI/UX Designer             | CV Kreasi Visual     | contract   | 7000000  | logos/kreasi-visual.png
+3 | Data Analyst               | Tokoloka Indonesia   | full-time  | 9500000  | logos/tokoloka.png
+4 | Staff Administrasi         | PT Sinergi Pangan    | part-time  | 3500000  | logos/sinergi-pangan.png
+5 | DevOps Engineer            | Grup Rekayasa Mandiri| full-time  | 12000000 | logos/rekayasa-mandiri.png
+6 | Web Developer Intern       | Yayasan Literasi Cerdas | internship | 2000000 | logos/literasi-cerdas.png
+7 | Frontend Engineer          | PT Solusi Awan Nusantara | full-time | 10000000 | logos/solusi-awan.png
+8 | Mobile Developer           | Koperasi Digital Sejahtera | part-time |       | logos/koperasi-digital.png
+\end{lstlisting}
+
+\screenshot{03_daftar-lowongan-kartu_20261115-035902.png}{Tampilan daftar lowongan dengan badge jenis pekerjaan pada setiap kartu}
+
+Gambar~\ref{fig:03_daftar-lowongan-kartu_20261115-035902.png} memperlihatkan badge jenis pekerjaan menempel tepat di bawah nama perusahaan. Warna badge membedakan keempat kategori tanpa perlu membaca teks panjang: biru untuk penuh waktu, kuning untuk paruh waktu, tosca untuk kontrak, dan hijau untuk magang. Ringkasan statistik di bagian atas halaman ikut menghitung jumlah lowongan penuh waktu dan magang, sehingga admin dapat menilai komposisi lowongan yang tersedia sebelum membuka satu per satu.
+
+\subsubsection{Butir 2: Daftar Lowongan Berbentuk Kartu}
+
+Tugas kedua meminta daftar lowongan diubah dari tabel menjadi kartu agar lebih nyaman dibaca. Penulis memakai grid Bootstrap dengan kelas \texttt{row-cols-1 row-cols-md-2 row-cols-xl-3}, sehingga jumlah kolom menyesuaikan lebar layar: satu kolom pada telepon, dua pada tablet, dan tiga pada layar lebar.
+
+\begin{lstlisting}[caption={Kerangka kartu lowongan pada \texttt{jobs/index.blade.php}}, label={lst:kartu}]
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+  @forelse ($jobs as $job)
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          @if ($job->logo)
+            <img src="{{ asset('storage/'.$job->logo) }}"
+                 class="rounded border bg-white me-3"
+                 style="width:64px;height:64px;object-fit:contain;">
+          @endif
+          <h5 class="fw-bold mb-1">{{ $job->title }}</h5>
+          <span class="badge {{ $job->job_type_badge }}">
+            {{ $job->job_type_label }}
+          </span>
+          <ul class="list-unstyled small text-muted mb-3">
+            <li>{{ $job->location }}</li>
+            <li>{{ $job->salary_formatted ?? 'Gaji tidak dicantumkan' }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  @empty
+    <div class="col-12">Belum ada lowongan yang tersimpan.</div>
+  @endforelse
+</div>
+\end{lstlisting}
+
+Kelas \texttt{h-100} pada kartu membuat tinggi seluruh kartu dalam satu baris seragam, sedangkan \texttt{d-flex flex-column} pada isi kartu mendorong deretan tombol tetap berada di bawah walaupun panjang deskripsi berbeda. Deskripsi dipotong dengan \texttt{Str::limit()} sepanjang 110 karakter agar kartu tidak melebar tidak wajar. Ketika tabel lowongan belum berisi data, blok \texttt{@empty} menampilkan pesan ajakan menambah lowongan, bukan halaman kosong tanpa penjelasan.
+
+\screenshot{04_daftar-lowongan-halaman-2_20261115-035903.png}{Halaman kedua daftar lowongan yang menunjukkan konsistensi tata letak kartu dan pagination}
+
+Pagination dipertahankan pada enam data per halaman. Gambar~\ref{fig:04_daftar-lowongan-halaman-2_20261115-035903.png} menunjukkan dua kartu sisa pada halaman kedua tetap tersusun rapi dengan tinggi yang sama meskipun hanya mengisi sebagian baris. Perilaku ini muncul karena setiap kartu dibungkus kolom grid yang lebarnya sudah ditentukan, bukan mengandalkan lebar isi kartu.
+
+\subsubsection{Butir 3: Fitur Edit, Update, dan Hapus Lowongan}
+
+Tugas ketiga melengkapi siklus CRUD dengan tiga method lanjutan pada controller. Method \texttt{edit} mengambil data berdasarkan ID dan mengirimkannya ke form, \texttt{update} memvalidasi masukan lalu menyimpan perubahan, dan \texttt{destroy} menghapus baris data beserta berkas logonya.
+
+\begin{lstlisting}[caption={Method \texttt{update} dan \texttt{destroy} pada \texttt{JobController}}, label={lst:update}]
+public function update(Request $request, string $id)
+{
+    $job = JobVacancy::findOrFail($id);
+    $validated = $request->validate($this->rules(), $this->messages());
+
+    if ($request->hasFile('logo')) {
+        if ($job->logo) {
+            Storage::disk('public')->delete($job->logo);
+        }
+        $validated['logo'] = $request->file('logo')->store('logos', 'public');
+    }
+
+    $job->update($validated);
+
+    return redirect()->route('jobs.index')
+        ->with('success', 'Lowongan "'.$job->title.'" berhasil diperbarui.');
+}
+
+public function destroy(string $id)
+{
+    $job = JobVacancy::findOrFail($id);
+
+    if ($job->logo) {
+        Storage::disk('public')->delete($job->logo);
+    }
+
+    $judul = $job->title;
+    $job->delete();
+
+    return redirect()->route('jobs.index')
+        ->with('success', 'Lowongan "'.$judul.'" berhasil dihapus.');
+}
+\end{lstlisting}
+
+Satu hal yang sempat menimbulkan kesalahan saat pengujian adalah urutan penghapusan berkas. Pada percobaan pertama, berkas logo dihapus setelah \texttt{\$job->update()}, sehingga jalur logo baru sudah menimpa jalur lama dan berkas lama tertinggal di direktori. Urutan yang benar adalah menyimpan jalur lama, menghapus berkas lama, baru menyimpan berkas baru seperti pada Listing~\ref{lst:update}. Kasus serupa juga muncul pada \texttt{destroy}: nilai judul disimpan ke variabel sementara sebelum baris dihapus karena setelah \texttt{delete()} atribut model tidak lagi dapat dibaca dengan andal.
+
+\screenshot{11_lowongan-diperbarui_20261115-035915.png}{Daftar lowongan setelah data diperbarui, disertai pesan sukses berisi judul lowongan}
+
+Gambar~\ref{fig:11_lowongan-diperbarui_20261115-035915.png} menampilkan pesan sukses yang menyebut judul lowongan secara spesifik, bukan kalimat umum. Penyebutan judul membantu admin memastikan data mana yang baru saja berubah, terutama ketika halaman memuat belasan lowongan. Perubahan jenis pekerjaan dari penuh waktu menjadi kontrak langsung terlihat pada badge kartu yang berganti warna.
+
+\screenshot{12_lowongan-dihapus_20261115-035917.png}{Kondisi daftar setelah satu lowongan dihapus melalui dialog konfirmasi}
+
+Sebelum penghapusan dijalankan, peramban menampilkan dialog konfirmasi yang dibangun dengan atribut \texttt{onsubmit="return confirm(...)"} pada form. Pada pengujian, dialog tersebut muncul dengan teks ``Hapus lowongan Mobile Developer (Flutter) - Senior?''. Setelah dikonfirmasi, data hilang dari daftar dan pesan sukses muncul di bagian atas halaman seperti tampak pada Gambar~\ref{fig:12_lowongan-dihapus_20261115-035917.png}. Jumlah pada ringkasan statistik ikut turun satu, tanda bahwa perhitungan dilakukan ulang setiap kali halaman dimuat.
+
+\subsection{Latihan Praktikum Modul}
+
+\subsubsection{Membuat Migration dan Model Job}
+
+Langkah pertama adalah membuat model sekaligus migration dengan perintah \texttt{php artisan make:model JobVacancy -m}. Berkas migration yang dihasilkan diberi nama sesuai waktu pembuatan, lalu diisi struktur tabel seperti pada Listing~\ref{lst:migrasi}. Migration dijalankan dengan \texttt{php artisan migrate}, dan hasilnya diperiksa melalui \texttt{php artisan migrate:status}.
+
+\newpage
+\begin{lstlisting}[caption={Keluaran perintah migrasi dan status tabel pada terminal}, label={lst:migrate}, language={}]
+$ php artisan migrate
+
+INFO Running migrations.
+
+2026_09_14_025841_create_perumahan ....................... 42.12ms DONE
+2026_09_28_020705_create_books_table ..................... 62.31ms DONE
+2026_11_02_074644_add_field_level_user ................... 44.26ms DONE
+2026_11_15_040000_create_job_vacancies_table ............. 38.49ms DONE
+
+$ php artisan migrate:status
+
+Migration name ..................................... Batch / Status
+2026_11_15_040000_create_job_vacancies_table ....... [1] Ran
+\end{lstlisting}
+
+Model \texttt{JobVacancy} mengisi properti \texttt{\$table} secara eksplisit dan mendaftarkan tujuh kolom pada \texttt{\$fillable}. Cast \texttt{salary} ke integer ditambahkan agar nilai gaji selalu diperlakukan sebagai bilangan bulat, termasuk ketika data diambil dari basis data SQLite yang menyimpan angka sebagai teks.
+
+\subsubsection{Membuat Resource Controller}
+
+Controller dibuat dengan \texttt{php artisan make:controller JobController --resource}. Laravel menyiapkan tujuh method kosong yang kemudian diisi bertahap. Aturan validasi dan pesan galat dikumpulkan pada dua method privat, \texttt{rules()} dan \texttt{messages()}, lalu dipanggil oleh \texttt{store} maupun \texttt{update}. Cara ini menghindari penyalinan aturan validasi yang sama pada dua tempat, sebuah kesalahan yang mudah terjadi ketika form tambah dan form edit dikerjakan terpisah.
+
+\begin{lstlisting}[caption={Aturan validasi dan pesan galat pada \texttt{JobController}}, label={lst:validasi}]
+private function rules(): array
+{
+    return [
+        'title'       => 'required|string|max:150',
+        'description' => 'required|string',
+        'location'    => 'required|string|max:100',
+        'company'     => 'required|string|max:100',
+        'salary'      => 'nullable|numeric|min:0',
+        'job_type'    => 'required|in:full-time,part-time,contract,internship',
+        'logo'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ];
+}
+
+private function messages(): array
+{
+    return [
+        'title.required'   => 'Judul lowongan wajib diisi.',
+        'company.required' => 'Nama perusahaan wajib diisi.',
+        'logo.mimes'       => 'Format logo harus JPG, JPEG, atau PNG.',
+        'logo.max'         => 'Ukuran logo maksimal 2 MB.',
+    ];
+}
+\end{lstlisting}
+
+Aturan \texttt{image} pada validasi logo memeriksa isi berkas, bukan sekadar ekstensi. Berkas teks yang dinamai \texttt{logo.png} tetap ditolak karena pemeriksaan membaca header gambar. Pada pengujian otomatis, berkas PDF yang dikirim ke kolom logo menghasilkan galat \texttt{logo.mimes}, sesuai harapan.
+
+\subsubsection{Mendaftarkan Route CRUD dengan Middleware}
+
+Rute didaftarkan dalam satu baris melalui \texttt{Route::resource}, lalu dipasangi dua middleware sekaligus. Alias \texttt{isAdmin} ditambahkan pada \texttt{bootstrap/app.php} dan diarahkan ke kelas \path{App\Http\Middleware\Admin} yang sudah ada sejak pertemuan sebelumnya, sehingga tidak perlu membuat kelas middleware baru.
+
+\begin{lstlisting}[caption={Pendaftaran rute resource lowongan pada \texttt{routes/web.php}}, label={lst:route}]
+Route::resource('jobs', JobController::class)
+    ->middleware(['auth', 'isAdmin']);
+\end{lstlisting}
+
+Hasil pendaftaran diperiksa dengan \texttt{php artisan route:list --path=jobs}. Ketujuh rute muncul lengkap dengan nama yang dibutuhkan oleh helper \texttt{route()} pada view.
+
+\begin{lstlisting}[caption={Keluaran \texttt{php artisan route:list --path=jobs}}, label={lst:routelist}, language={}]
+ GET|HEAD   jobs ............ jobs.index   > JobController@index
+ POST       jobs ............ jobs.store   > JobController@store
+ GET|HEAD   jobs/create ..... jobs.create  > JobController@create
+ GET|HEAD   jobs/{job} ...... jobs.show    > JobController@show
+ PUT|PATCH  jobs/{job} ...... jobs.update  > JobController@update
+ DELETE     jobs/{job} ...... jobs.destroy > JobController@destroy
+ GET|HEAD   jobs/{job}/edit . jobs.edit    > JobController@edit
+
+Showing [7] routes
+\end{lstlisting}
+
+\subsubsection{Membuat Form Tambah Lowongan}
+
+Form tambah lowongan ditulis pada berkas \texttt{jobs/create.blade.php} dan memakai partial \texttt{jobs/\_form.blade.php} yang sama dengan form edit. Pada elemen form disertakan atribut \texttt{enctype="multipart/form-data"} serta token \texttt{@csrf}. Setiap kolom memakai kelas \texttt{is-invalid} secara kondisional agar kolom yang bermasalah diberi garis merah ketika validasi gagal.
+
+\screenshot{05_form-tambah-lowongan_20261115-035905.png}{Form tambah lowongan sebelum diisi}
+
+Gambar~\ref{fig:05_form-tambah-lowongan_20261115-035905.png} menunjukkan tujuh kolom masukan: judul, jenis pekerjaan, nama perusahaan, lokasi, gaji, logo, dan deskripsi. Kolom gaji diberi keterangan kecil bahwa nilai boleh dikosongkan bila nominal dirahasiakan. Kolom logo menerima berkas JPG atau PNG dengan batas 2 MB, dan atribut \texttt{accept} pada elemen input membantu peramban menyaring berkas yang salah sejak awal.
+
+\screenshot{06_validasi-form-kosong_20261115-035906.png}{Pesan validasi berbahasa Indonesia saat form dikirim dalam keadaan kosong}
+
+Pengujian form kosong menghasilkan empat pesan galat yang muncul serentak, seperti tampak pada Gambar~\ref{fig:06_validasi-form-kosong_20261115-035906.png}. Ringkasan galat diletakkan di atas form agar pengguna melihat keseluruhan masalah sekaligus, sementara pesan per kolom membantu menandai letak kesalahan. Nilai yang sudah diketik sebelumnya tetap dipertahankan berkat helper \texttt{old()}, sehingga pengguna hanya perlu memperbaiki kolom yang salah.
+
+\subsubsection{Menyimpan Data dan Memproses Unggahan Logo}
+
+Method \texttt{store} memisahkan dua urusan: validasi masukan dan penyimpanan berkas. Berkas logo disimpan lebih dahulu untuk memperoleh jalur relatifnya, kemudian jalur itu dimasukkan ke array data yang dikirim ke \texttt{JobVacancy::create()}.
+
+\begin{lstlisting}[caption={Method \texttt{store} pada \texttt{JobController}}, label={lst:store}]
+public function store(Request $request)
+{
+    $validated = $request->validate($this->rules(), $this->messages());
+
+    if ($request->hasFile('logo')) {
+        $validated['logo'] = $request->file('logo')->store('logos', 'public');
+    }
+
+    JobVacancy::create($validated);
+
+    return redirect()->route('jobs.index')
+        ->with('success', 'Lowongan "'.$validated['title'].'" berhasil ditambahkan.');
+}
+\end{lstlisting}
+
+\screenshot{07_form-tambah-terisi-logo_20261115-035907.png}{Form tambah lowongan yang sudah diisi lengkap dengan berkas logo terlampir}
+
+Gambar~\ref{fig:07_form-tambah-terisi-logo_20261115-035907.png} memperlihatkan form dalam keadaan terisi. Nama berkas logo yang dipilih muncul di samping tombol pemilih berkas. Pada tahap ini berkas belum dikirim ke server; pengiriman baru terjadi ketika tombol simpan ditekan.
+
+\screenshot{08_lowongan-berhasil-ditambahkan_20261115-035909.png}{Pesan sukses setelah lowongan baru berhasil disimpan}
+
+Setelah penyimpanan, pengguna diarahkan kembali ke halaman daftar dan pesan sukses muncul seperti pada Gambar~\ref{fig:08_lowongan-berhasil-ditambahkan_20261115-035909.png}. Pesan tersebut membaca nama judul dari data yang baru divalidasi, sehingga judul yang tampil persis sama dengan yang tersimpan di basis data, termasuk tanda baca dan huruf kapitalnya.
+
+\screenshot{15_lowongan-dengan-logo-baru_20261115-035951.png}{Kartu lowongan baru dengan logo hasil unggahan pengguna}
+
+Logo yang diunggah langsung tampil pada kartu lowongan, sebagaimana ditunjukkan Gambar~\ref{fig:15_lowongan-dengan-logo-baru_20261115-035951.png}. Nama berkas di balik logo tersebut bukan nama asli dari komputer pengguna, melainkan nama acak sepanjang 40 karakter dengan ekstensi sesuai jenis berkas. Perilaku ini berasal dari method \texttt{store()} yang mencegah dua pengguna mengunggah berkas bernama sama dan saling menimpa.
+
+\begin{lstlisting}[caption={Berkas hasil unggahan pada direktori penyimpanan publik}, label={lst:ls}, language={}]
+$ ls -la storage/app/public/logos
+
+-rw-rw-r-- 1 fadlan fadlan 4227 Nov 15 03:56 koperasi-digital.png
+-rw-rw-r-- 1 fadlan fadlan 4495 Nov 15 03:56 kreasi-visual.png
+-rw-rw-r-- 1 fadlan fadlan 3590 Nov 15 03:56 literasi-cerdas.png
+-rw-rw-r-- 1 fadlan fadlan 3800 Nov 15 03:56 nusantara-digital.png
+-rw-rw-r-- 1 fadlan fadlan 3802 Nov 15 03:56 rekayasa-mandiri.png
+-rw-rw-r-- 1 fadlan fadlan 5110 Nov 15 03:56 solusi-awan.png
+-rw-rw-r-- 1 fadlan fadlan 1443 Nov 15 03:56 tokoloka.png
+-rw-r--r-- 1 fadlan fadlan 6384 Nov 15 03:59 torLoUm2tVD392aSGNWcVWW7afxQW2iHqSQhfS0E.png
+\end{lstlisting}
+
+Baris terakhir pada Listing~\ref{lst:ls} adalah berkas yang diunggah melalui peramban, sementara delapan berkas sebelumnya berasal dari seeder. Semuanya berada pada direktori yang sama karena keduanya memakai disk \texttt{public} dengan subdirektori \texttt{logos}. Perintah \texttt{php artisan storage:link} yang dijalankan satu kali menghasilkan tautan \texttt{public/storage} menuju \texttt{storage/app/public}, sehingga berkas tersebut dapat dibuka melalui alamat \texttt{/storage/logos/nama-berkas.png}.
+
+\screenshot{13_logo-akses-storage-publik_20261115-035918.png}{Logo lowongan terbuka melalui URL publik hasil storage link}
+
+Gambar~\ref{fig:13_logo-akses-storage-publik_20261115-035918.png} membuktikan tautan simbolik bekerja. Permintaan terhadap alamat logo dijawab dengan kode status 200 dan berkas gambar ditampilkan langsung oleh peramban. Tanpa \texttt{storage:link}, alamat yang sama akan menghasilkan kode 404 walaupun berkasnya benar-benar ada di disk.
+
+\subsubsection{Menampilkan Daftar Lowongan}
+
+Method \texttt{index} mengambil data dengan urutan terbaru lebih dahulu dan membatasi enam data per halaman. Selain daftar, method ini menghitung empat angka ringkasan memakai query agregat terpisah: jumlah lowongan, jumlah perusahaan unik, jumlah lowongan penuh waktu, dan jumlah program magang.
+
+\begin{lstlisting}[caption={Method \texttt{index} pada \texttt{JobController}}, label={lst:index}]
+public function index()
+{
+    $jobs = JobVacancy::orderBy('created_at', 'desc')->paginate(6);
+
+    $statistik = [
+        'total'      => JobVacancy::count(),
+        'perusahaan' => JobVacancy::distinct('company')->count('company'),
+        'full_time'  => JobVacancy::where('job_type', 'full-time')->count(),
+        'magang'     => JobVacancy::where('job_type', 'internship')->count(),
+    ];
+
+    return view('jobs.index', compact('jobs', 'statistik'));
+}
+\end{lstlisting}
+
+Empat query terpisah pada Listing~\ref{lst:index} sengaja dipilih demi keterbacaan. Untuk data sekecil ini biayanya tidak terasa, tetapi bila jumlah lowongan tumbuh besar, keempat angka dapat digabung menjadi satu query dengan \texttt{selectRaw} dan klausa \texttt{conditional aggregation}.
+
+Selain daftar, halaman detail disediakan untuk membaca deskripsi penuh. Halaman ini memakai rute \texttt{jobs.show} dan menampilkan logo perusahaan berukuran lebih besar bersama waktu pembuatan dan pembaruan data.
+
+\screenshot{09_detail-lowongan_20261115-035911.png}{Halaman detail lowongan hasil unggahan pengguna}
+
+Gambar~\ref{fig:09_detail-lowongan_20261115-035911.png} menunjukkan halaman detail lowongan yang baru ditambahkan. Deskripsi ditampilkan utuh dengan properti CSS \texttt{white-space: pre-line} agar baris baru yang diketik admin tetap dipertahankan. Waktu pembuatan dan pembaruan memakai format tanggal Indonesia melalui Carbon, sehingga admin dapat melacak kapan terakhir data disentuh.
+
+\subsubsection{Mengedit dan Menghapus Lowongan}
+
+Form edit memakai partial yang sama dengan form tambah, hanya berbeda pada aksi form dan method tambahan \texttt{@method('PUT')}. Logo lama ditampilkan sebagai pratinjau beserta nama berkasnya, sehingga admin tahu berkas mana yang sedang dipakai sebelum memutuskan menggantinya.
+
+\screenshot{10_form-edit-lowongan_20261115-035913.png}{Form edit lowongan dengan pratinjau logo yang sedang terpasang}
+
+Gambar~\ref{fig:10_form-edit-lowongan_20261115-035913.png} memperlihatkan seluruh kolom sudah terisi nilai lama. Pratinjau logo ditampilkan di bawah kolom unggah bersama keterangan jalur berkas. Bila admin mengunggah logo baru, berkas lama dihapus dari disk agar tidak menumpuk, dan kolom basis data diarahkan ke berkas baru. Bila kolom logo dibiarkan kosong, logo lama tetap dipakai.
+
+Alur penghapusan sudah dibahas pada Butir 3. Hal yang perlu ditegaskan di sini adalah perilaku berkas pada disk. Setelah data dihapus, berkas logo ikut lenyap. Pada pengujian dengan pengujian otomatis, hal ini diperiksa memakai \texttt{Storage::fake('public')} dan assertion \texttt{assertMissing()}, sehingga tidak ada berkas yatim yang tertinggal setiap kali data lowongan dibersihkan.
+
+\subsubsection{Pengujian Fungsional dan Otorisasi}
+
+Pengujian dilakukan pada dua tingkat. Tingkat pertama adalah pengujian otomatis dengan Pest yang mencakup tujuh skenario pada berkas \texttt{tests/Feature/JobCrudFeatureTest.php}. Tingkat kedua adalah pengujian antarmuka dengan Playwright terhadap server lokal, yang menghasilkan lima belas tangkapan layar pada direktori \texttt{documentation/screenshots}.
+
+\begin{lstlisting}[caption={Ringkasan hasil pengujian otomatis modul lowongan}, label={lst:pest}, language={}]
+$ php artisan test --filter=JobCrud
+
+{"tool":"pest","result":"passed","tests":6,
+ "passed":6,"assertions":32,"duration_ms":485}
+
+$ php artisan test
+
+{"tool":"pest","result":"passed","tests":33,
+ "passed":33,"assertions":113,"duration_ms":1203}
+\end{lstlisting}
+
+Enam pengujian pada modul lowongan menutup kasus daftar lowongan beserta statistiknya, penolakan form kosong, penyimpanan dengan unggahan logo, penggantian logo saat pembaruan, penghapusan data beserta berkasnya, dan penolakan akses bagi akun biasa. Seluruh rangkaian proyek berjumlah 33 pengujian dan semuanya lulus.
+
+Satu kendala muncul saat pengujian penyimpanan logo. Helper \texttt{UploadedFile::fake()->image()} membutuhkan ekstensi GD yang tidak terpasang pada lingkungan pengujian, sehingga pengujian gagal dengan pesan ``GD extension is not installed''. Penulis menggantinya dengan \texttt{createWithContent()} yang membaca berkas PNG asli berukuran kecil dari direktori \texttt{tests/Fixtures}. Aturan validasi \texttt{image} tetap teruji karena berkas tersebut memiliki header gambar yang sah, dan pengujian tidak lagi bergantung pada ekstensi PHP tertentu.
+
+Pada sisi antarmuka, seluruh interaksi dijalankan melalui peramban Chromium tanpa mode tampilan. Pemeriksaan mencakup pengisian dan pengiriman form, pemilihan jenis pekerjaan, pemilihan berkas logo, konfirmasi dialog penghapusan, dan perpindahan halaman pagination. Console peramban hanya mencatat satu pesan galat, yaitu respons 403 yang memang diharapkan pada pengujian otorisasi.
+
+\screenshot{14_akses-lowongan-ditolak-user_20261115-035921.png}{Halaman 403 saat akun level user mencoba membuka modul lowongan}
+
+Gambar~\ref{fig:14_akses-lowongan-ditolak-user_20261115-035921.png} menampilkan penolakan akses untuk akun \texttt{user@mail.ugm.ac.id}. Permintaan terhadap \texttt{/jobs} dijawab dengan kode status 403 dan pesan bahwa halaman hanya dapat diakses administrator. Middleware bekerja sebelum controller dijalankan, sehingga tidak ada query basis data yang dieksekusi pada permintaan yang ditolak.
+
+\screenshot{01_halaman-login_20261115-035858.png}{Halaman login sebagai pintu masuk aplikasi}
+
+\screenshot{02_dashboard-admin_20261115-035900.png}{Dashboard administrator dengan pintasan menuju modul lowongan}
+
+Gambar~\ref{fig:01_halaman-login_20261115-035858.png} dan Gambar~\ref{fig:02_dashboard-admin_20261115-035900.png} menunjukkan alur masuk aplikasi. Setelah login, dashboard menampilkan tiga kartu modul: data buku, kelola pengguna, dan lowongan kerja. Kartu modul lowongan hanya menampilkan tombol pengelolaan bagi akun admin, sedangkan akun biasa menerima tombol uji akses yang akan berujung pada halaman 403.
+
+\begin{table}[H]
+  \centering
+  \caption{Ringkasan pengujian fungsional modul lowongan kerja}
+  \label{tab:uji}
+  \begin{tabular}{@{}p{6.2cm}p{3.2cm}p{3.2cm}@{}}
+    \toprule
+    \textbf{Skenario} & \textbf{Harapan} & \textbf{Hasil} \\
+    \midrule
+    Buka daftar lowongan sebagai admin & 200, enam kartu & Sesuai \\
+    Kirim form tambah dalam keadaan kosong & Empat pesan galat & Sesuai \\
+    Tambah lowongan dengan logo PNG & Data dan berkas tersimpan & Sesuai \\
+    Ganti logo melalui form edit & Berkas lama terhapus & Sesuai \\
+    Hapus lowongan & Data dan logo hilang & Sesuai \\
+    Buka \texttt{/jobs} sebagai akun user & 403 & Sesuai \\
+    Buka \texttt{/jobs} tanpa login & Redirect ke login & Sesuai \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Sintesis Hasil Praktikum}
+
+Seluruh butir tugas dan langkah latihan modul berjalan pada aplikasi yang sama tanpa mengganggu modul sebelumnya. Tiga hal menonjol dari pengerjaan ini. Pertama, penambahan kolom jenis pekerjaan menunjukkan bahwa perubahan skema dapat dilakukan lewat migration tanpa menyentuh basis data secara manual, dan nilai enum menjaga konsistensi data sejak lapisan paling bawah. Kedua, pemisahan aturan validasi ke dalam method tersendiri membuat form tambah dan form edit memakai aturan yang identik, sehingga tidak ada perbedaan perilaku yang membingungkan pengguna. Ketiga, pengelolaan berkas menuntut perhatian pada urutan operasi: menyimpan jalur lama, menghapus berkas lama, lalu menulis berkas baru. Urutan yang salah tetap menghasilkan tampilan benar di peramban, tetapi meninggalkan berkas yatim di disk, jenis kesalahan yang tidak terlihat sampai direktori penyimpanan diperiksa.
+
+Dari sisi pengujian, kombinasi pengujian otomatis dan pengujian antarmuka saling melengkapi. Pengujian otomatis cepat memeriksa aturan validasi dan perubahan basis data, sedangkan pengujian antarmuka memastikan tampilan, pesan, dan alur navigasi benar-benar bekerja pada peramban nyata. Satu tangkapan layar tidak dapat membuktikan isi basis data, dan satu assertion tidak dapat membuktikan tata letak kartu tetap rapi pada layar sempit. Keduanya diperlukan.
+
+% ======================================================================
+\section{Kesimpulan}
+% ======================================================================
+
+\begin{enumerate}[leftmargin=1.4cm, itemsep=3pt]
+  \item Siklus CRUD pada Laravel dapat dibangun dengan migration, model Eloquent, resource controller, dan view Blade yang saling terhubung melalui penamaan route yang konsisten.
+  \item Kolom jenis pekerjaan bertipe enum beserta accessor label dan badge memindahkan urusan tampilan ke model, sehingga view tetap ringkas dan nilai data tetap terkendali.
+  \item Unggahan logo berjalan melalui \texttt{store('logos', 'public')} dan memerlukan \texttt{php artisan storage:link} agar berkas dapat diakses dari peramban.
+  \item Penggantian dan penghapusan logo harus menghapus berkas lama di disk; tanpa langkah ini, berkas yatim akan menumpuk meski tampilan aplikasi terlihat normal.
+  \item Middleware \texttt{isAdmin} yang dipasang pada rute resource menolak akun non-administrator dengan kode 403 sebelum controller dijalankan.
+  \item Seluruh 33 pengujian otomatis lulus, dan lima belas tangkapan layar dari peramban nyata memverifikasi alur tambah, baca, ubah, hapus, serta penolakan akses.
+\end{enumerate}
+
+% ======================================================================
+\clearpage
+\section*{Daftar Pustaka}
+\addcontentsline{toc}{section}{Daftar Pustaka}
+% ======================================================================
+
+\begin{thebibliography}{9}
+\setlength{\itemsep}{2pt}
+
+\bibitem{fowler2003}
+M. Fowler, \textit{Patterns of Enterprise Application Architecture}. Boston, MA, USA: Addison-Wesley, 2003.
+
+\bibitem{laravel2026migrations}
+Laravel, ``Database: Migrations,'' \textit{Laravel Documentation}, 2026. [Online]. Tersedia: \url{https://laravel.com/docs/migrations}
+
+\bibitem{laravel2026eloquent}
+Laravel, ``Eloquent: Getting Started,'' \textit{Laravel Documentation}, 2026. [Online]. Tersedia: \url{https://laravel.com/docs/eloquent}
+
+\bibitem{laravel2026controllers}
+Laravel, ``Controllers,'' \textit{Laravel Documentation}, 2026. [Online]. Tersedia: \url{https://laravel.com/docs/controllers}
+
+\bibitem{laravel2026blade}
+Laravel, ``Blade Templates,'' \textit{Laravel Documentation}, 2026. [Online]. Tersedia: \url{https://laravel.com/docs/blade}
+
+\bibitem{laravel2026filesystem}
+Laravel, ``File Storage,'' \textit{Laravel Documentation}, 2026. [Online]. Tersedia: \url{https://laravel.com/docs/filesystem}
+
+\bibitem{laravel2026middleware}
+Laravel, ``Middleware,'' \textit{Laravel Documentation}, 2026. [Online]. Tersedia: \url{https://laravel.com/docs/middleware}
+
+\bibitem{modul2026}
+D. N. Pratomo, \textit{Panduan Praktikum Pemrograman Web 2: File Upload}. Yogyakarta: Program Studi D-IV Teknologi Rekayasa Perangkat Lunak, Sekolah Vokasi, Universitas Gadjah Mada, 2026.
+
+\end{thebibliography}
+
+\end{document}
