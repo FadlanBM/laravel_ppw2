@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\MencobaController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -51,3 +52,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('users', UserController::class);
 });
+
+// Pertemuan 3: CRUD Lowongan Kerja dengan Upload Logo Perusahaan
+Route::resource('jobs', JobController::class)->middleware(['auth', 'isAdmin']);

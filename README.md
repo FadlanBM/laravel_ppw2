@@ -1,6 +1,8 @@
-# Praktikum Pemrograman Web 2 (PPW-2) — Pertemuan 8: Fitur Pelengkap CRUD
+# Praktikum Pemrograman Web 2 (PPW-2) — Pertemuan 3: File Upload (CRUD Lowongan Kerja)
 
 Repositori ini memuat implementasi proyek praktikum mata kuliah **Pemrograman Web 2 (PPW / PPWL)** pada Program Studi D-IV Teknologi Rekayasa Perangkat Lunak, Departemen Teknik Elektro dan Informatika, Sekolah Vokasi, Universitas Gadjah Mada.
+
+Modul yang tersedia saat ini: Pertemuan 1 (route & view), Pertemuan 3 (CRUD lowongan kerja + unggah logo), Pertemuan 5 (controller & migration), Pertemuan 8 (autentikasi, middleware, dan fitur pelengkap CRUD).
 
 ---
 
@@ -108,6 +110,52 @@ Proyek ini dibangun menggunakan **Laravel 12 (PHP 8.4)** dengan fokus pada penye
 
 ---
 
+## 📦 Modul Pertemuan 3: CRUD Lowongan Kerja + Upload Logo
+
+Modul ini menambahkan entitas `job_vacancies` sebagai inti portal lowongan kerja. Seluruh operasi CRUD dijalankan melalui `JobController` yang dibuat dengan `--resource`, lalu dilindungi middleware `auth` dan `isAdmin`.
+
+### 1. Basis Data dan Model
+
+- Migrasi `2026_11_15_040000_create_job_vacancies_table.php` membuat kolom `title`, `description`, `location`, `company`, `logo` (nullable), `salary` (nullable), dan `job_type` bertipe enum (`full-time`, `part-time`, `contract`, `internship`).
+- Model `App\Models\JobVacancy` mendefinisikan `$table`, `$fillable`, cast `salary` ke integer, serta tiga accessor: `job_type_label`, `job_type_badge`, dan `salary_formatted`.
+- `JobVacancySeeder` mengisi delapan lowongan contoh dengan berkas logo nyata pada `storage/app/public/logos`.
+
+### 2. Controller dan Validasi
+
+`JobController` menangani `index`, `create`, `store`, `show`, `edit`, `update`, dan `destroy`. Validasi memakai pesan berbahasa Indonesia: judul wajib (maks. 150 karakter), deskripsi wajib, lokasi wajib, perusahaan wajib, gaji opsional numerik, jenis pekerjaan wajib salah satu enum, dan logo opsional dengan aturan `image|mimes:jpg,jpeg,png|max:2048`.
+
+### 3. Penyimpanan Berkas
+
+- Logo disimpan melalui `$request->file('logo')->store('logos', 'public')` sehingga menghasilkan nama acak di `storage/app/public/logos`.
+- `php artisan storage:link` menghubungkan `public/storage` ke `storage/app/public` agar logo dapat diakses melalui URL publik.
+- Saat logo diganti atau lowongan dihapus, berkas lama dihapus dari disk dengan `Storage::disk('public')->delete()` untuk mencegah penumpukan berkas yatim.
+
+### 4. Antarmuka (Blade)
+
+- `jobs/index.blade.php`: ringkasan statistik (total lowongan, perusahaan, full-time, magang) dan daftar lowongan berbentuk kartu Bootstrap dengan logo, badge jenis pekerjaan, gaji terformat rupiah, serta tombol Detail, Edit, dan Hapus.
+- `jobs/_form.blade.php`: partial form yang dipakai bersama oleh `create` dan `edit`, memuat tampilan pesan galat per field, nilai `old()`, dan pratinjau logo saat ini.
+- `jobs/show.blade.php`: halaman detail lowongan beserta keterangan waktu dibuat dan diperbarui.
+
+### 5. Otorisasi
+
+Rute `Route::resource('jobs', JobController::class)->middleware(['auth', 'isAdmin'])` didaftarkan pada `bootstrap/app.php` sebagai alias middleware `isAdmin` yang menunjuk ke `App\Http\Middleware\Admin`. Akun level `user` yang mencoba membuka `/jobs` menerima respons HTTP 403.
+
+### 6. Bukti Pengujian
+
+Pengujian antarmuka dilakukan dengan Playwright (Chromium headless) terhadap server `php artisan serve`. Seluruh tangkapan layar tersimpan pada `documentation/screenshots/` dengan pola nama `[nomor]_[nama-halaman]_[YYYYMMDD-HHMMSS].png`.
+
+| Skenario | Hasil |
+|---|---|
+| Login administrator | HTTP 200, diarahkan ke `/dashboard` |
+| Daftar lowongan & pagination | 6 kartu per halaman, total 8 data awal |
+| Submit form kosong | 4 pesan validasi tampil pada field wajib |
+| Tambah lowongan + unggah logo | Redirect ke `/jobs`, flash sukses, berkas tersimpan di `storage/app/public/logos` |
+| Detail, edit, update | Perubahan judul, gaji, dan jenis pekerjaan tersimpan |
+| Hapus lowongan | Dialog konfirmasi muncul, data dan berkas logo terhapus |
+| Akses `/jobs` oleh akun user | HTTP 403 melalui middleware `isAdmin` |
+
+---
+
 ## 🧪 Pengujian Otomatis (Automated Testing)
 
 Keandalan seluruh fungsionalitas diuji secara otomatis menggunakan framework pengujian **Pest / PHPUnit** pada berkas `tests/Feature/BukuCrudFeatureTest.php`.
@@ -149,6 +197,13 @@ Hasil pengujian: **18 passed (56 assertions), 100% lolos pengujian**.
 | `POST` | `/register` | - | `AuthController@register` | Proses pendaftaran akun |
 | `POST` | `/logout` | `logout` | `AuthController@logout` | Proses logout |
 | `GET` | `/dashboard` | `dashboard` | Closure (auth middleware) | Halaman dashboard pengguna |
+| `GET` | `/jobs` | `jobs.index` | `JobController@index` | Daftar lowongan (kartu) + statistik |
+| `GET` | `/jobs/create` | `jobs.create` | `JobController@create` | Form tambah lowongan & unggah logo |
+| `POST` | `/jobs` | `jobs.store` | `JobController@store` | Simpan lowongan baru + validasi + upload logo |
+| `GET` | `/jobs/{id}` | `jobs.show` | `JobController@show` | Detail lowongan |
+| `GET` | `/jobs/{id}/edit` | `jobs.edit` | `JobController@edit` | Form edit lowongan |
+| `PUT/PATCH` | `/jobs/{id}` | `jobs.update` | `JobController@update` | Perbarui lowongan (opsional ganti logo) |
+| `DELETE` | `/jobs/{id}` | `jobs.destroy` | `JobController@destroy` | Hapus lowongan dan berkas logo |
 
 ---
 
@@ -173,7 +228,8 @@ Hasil pengujian: **18 passed (56 assertions), 100% lolos pengujian**.
 
 4. **Migrasi dan Seeder Basis Data**:
    ```bash
-   php artisan migrate:fresh --seed --class=BukuSeeder
+   php artisan migrate:fresh --seed
+   php artisan storage:link
    ```
 
 5. **Jalankan Server Lokal**:

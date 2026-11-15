@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             BukuSeeder::class,
+            JobVacancySeeder::class,
         ]);
     }
 }
