@@ -67,18 +67,31 @@
                         <div class="mt-4">
                             <h5 class="fw-bold mb-3"><i class="fa-solid fa-shield-halved me-2 text-primary"></i>Akses Modul Sistem</h5>
                             <div class="row g-3">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="card border h-100">
                                         <div class="card-body">
-                                            <h6 class="fw-bold text-dark"><i class="fa-solid fa-book me-2 text-primary"></i>Modul Data Buku</h6>
-                                            <p class="text-muted small">Dapat diakses oleh semua pengguna yang telah terautentikasi (Level: Admin & User).</p>
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h6 class="fw-bold text-dark"><i class="fa-solid fa-book me-2 text-primary"></i>Modul Data Buku</h6>
+                                                @if(Auth::user()->level === 'admin')
+                                                    <span class="badge bg-success small">Akses Penuh (Admin)</span>
+                                                @else
+                                                    <span class="badge bg-info text-dark small">Lihat Saja (User)</span>
+                                                @endif
+                                            </div>
+                                            <p class="text-muted small">
+                                                @if(Auth::user()->level === 'admin')
+                                                    Dapat diakses penuh untuk melihat, menambah, mengubah, serta menghapus data dan cover buku.
+                                                @else
+                                                    Sebagai pengguna biasa, Anda hanya dapat melihat katalog dan mencari buku (mode baca/view-only).
+                                                @endif
+                                            </p>
                                             <a href="{{ route('buku.index') }}" class="btn btn-primary btn-sm">
                                                 <i class="fa-solid fa-arrow-right me-1"></i> Buka Katalog Buku
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="card border h-100 {{ Auth::user()->level === 'admin' ? 'border-primary' : 'border-danger' }}">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-start">
@@ -103,36 +116,6 @@
                                                 </a>
                                             @else
                                                 <a href="{{ route('users.index') }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Peringatan: Level Anda adalah User biasa. Akses ke modul ini akan diblokir oleh Middleware Admin dengan HTTP 403. Lanjutkan percobaan akses?')">
-                                                    <i class="fa-solid fa-lock me-1"></i> Coba Akses (Uji 403)
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card border h-100 {{ Auth::user()->level === 'admin' ? 'border-primary' : 'border-danger' }}">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <h6 class="fw-bold text-dark"><i class="fa-solid fa-briefcase me-2 text-primary"></i>Modul Lowongan Kerja</h6>
-                                                @if(Auth::user()->level === 'admin')
-                                                    <span class="badge bg-success small">Diizinkan</span>
-                                                @else
-                                                    <span class="badge bg-danger small">Terkunci</span>
-                                                @endif
-                                            </div>
-                                            <p class="text-muted small">
-                                                Portal lowongan dengan CRUD lengkap dan unggah logo perusahaan (Pertemuan 3).
-                                                @if(Auth::user()->level !== 'admin')
-                                                    Hanya administrator yang boleh mengelola data lowongan.
-                                                @endif
-                                            </p>
-                                            @if(Auth::user()->level === 'admin')
-                                                <a href="{{ route('jobs.index') }}" class="btn btn-success btn-sm">
-                                                    <i class="fa-solid fa-briefcase me-1"></i> Kelola Lowongan
-                                                </a>
-                                            @else
-                                                <a href="{{ route('jobs.index') }}" class="btn btn-outline-danger btn-sm"
-                                                   onclick="return confirm('Akun Anda level User. Rute ini dilindungi middleware isAdmin, akses akan ditolak dengan HTTP 403. Lanjutkan?')">
                                                     <i class="fa-solid fa-lock me-1"></i> Coba Akses (Uji 403)
                                                 </a>
                                             @endif

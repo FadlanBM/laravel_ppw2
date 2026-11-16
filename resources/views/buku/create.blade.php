@@ -23,7 +23,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('buku.store') }}" method="POST">
+                <form action="{{ route('buku.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label for="judul" class="form-label fw-semibold">Judul Buku</label>
@@ -41,12 +41,19 @@
                     </div>
 
                     {{-- Penerapan Datepicker (Latihan 2) --}}
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label for="tgl_terbit" class="form-label fw-semibold">Tanggal Terbit</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
                             <input type="text" name="tgl_terbit" id="tgl_terbit" class="form-control datepicker @error('tgl_terbit') is-invalid @enderror" value="{{ old('tgl_terbit') }}" placeholder="Pilih tanggal (yyyy-mm-dd)" autocomplete="off">
                         </div>
+                    </div>
+
+                    {{-- Upload Cover Buku --}}
+                    <div class="mb-4">
+                        <label for="cover" class="form-label fw-semibold">Cover Buku</label>
+                        <input type="file" name="cover" id="cover" class="form-control @error('cover') is-invalid @enderror" accept="image/png, image/jpeg, image/jpg">
+                        <small class="text-muted">Format: JPG, JPEG, PNG (Maksimal 2 MB)</small>
                     </div>
 
                     <div class="d-flex justify-content-between">

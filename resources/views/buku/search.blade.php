@@ -43,31 +43,50 @@
                     <thead class="table-dark">
                         <tr>
                             <th scope="col" style="width: 60px;" class="text-center">No</th>
+                            <th scope="col" style="width: 90px;" class="text-center">Cover</th>
                             <th scope="col">Judul Buku</th>
                             <th scope="col">Penulis</th>
                             <th scope="col">Harga</th>
                             <th scope="col">Tgl. Terbit</th>
-                            <th scope="col" style="width: 160px;" class="text-center">Aksi</th>
+                            <th scope="col" style="width: 200px;" class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data_buku as $buku)
                             <tr>
                                 <td class="text-center">{{ ++$no }}</td>
-                                <td class="fw-semibold">{{ $buku->judul }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('buku.show', $buku->id) }}" title="Lihat detail {{ $buku->judul }}">
+                                        @if ($buku->cover)
+                                            <img src="{{ asset('storage/' . $buku->cover) }}" alt="{{ $buku->judul }}" class="img-thumbnail rounded shadow-sm" style="width: 50px; height: 65px; object-fit: cover;">
+                                        @else
+                                            <span class="badge bg-secondary">No Cover</span>
+                                        @endif
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ route('buku.show', $buku->id) }}" class="fw-semibold text-decoration-none text-dark" title="Lihat detail">
+                                        {{ $buku->judul }}
+                                    </a>
+                                </td>
                                 <td>{{ $buku->penulis }}</td>
                                 <td>Rp {{ number_format($buku->harga, 0, ',', '.') }}</td>
                                 <td>{{ $buku->tgl_terbit->format('d/m/Y') }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('buku.edit', $buku->id) }}" class="btn btn-sm btn-warning text-dark me-1" title="Edit">
-                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    <a href="{{ route('buku.show', $buku->id) }}" class="btn btn-sm btn-info text-white me-1" title="Detail">
+                                        <i class="fa-solid fa-eye"></i> Detail
                                     </a>
-                                    <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                            <i class="fa-solid fa-trash"></i> Hapus
-                                        </button>
-                                    </form>
+                                    @if(Auth::user()->level === 'admin')
+                                        <a href="{{ route('buku.edit', $buku->id) }}" class="btn btn-sm btn-warning text-dark me-1" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </a>
+                                        <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                                <i class="fa-solid fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

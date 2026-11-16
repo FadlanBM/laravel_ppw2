@@ -34,9 +34,6 @@
                             <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
                                 <i class="fa-solid fa-users-gear me-1"></i> Data Pengguna
                             </a>
-                            <a class="nav-link {{ request()->routeIs('jobs.*') ? 'active' : '' }}" href="{{ route('jobs.index') }}">
-                                <i class="fa-solid fa-briefcase me-1"></i> Lowongan
-                            </a>
                         @endif
                     @endauth
                 </div>

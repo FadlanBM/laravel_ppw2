@@ -76,7 +76,7 @@ class AuthFeatureTest extends TestCase
 
         $dashResponse = $this->actingAs($user)->get('/dashboard');
         $dashResponse->assertStatus(200);
-        $dashResponse->assertSee("logged in!");
+        $dashResponse->assertSee('logged in!');
         $dashResponse->assertSee('HR Admin - PT Teknologi');
     }
 

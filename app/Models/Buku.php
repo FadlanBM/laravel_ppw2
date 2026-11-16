@@ -13,6 +13,7 @@ class Buku extends Model
         'penulis',
         'harga',
         'tgl_terbit',
+        'cover',
     ];
 
     /**

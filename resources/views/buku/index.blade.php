@@ -8,9 +8,11 @@
         <h2 class="fw-bold text-dark m-0">Data Buku</h2>
     </div>
     <div class="col-md-6 text-end">
-        <a href="{{ route('buku.create') }}" class="btn btn-primary shadow-sm">
-            <i class="fa-solid fa-plus me-1"></i> Tambah Buku
-        </a>
+        @if(Auth::user()->level === 'admin')
+            <a href="{{ route('buku.create') }}" class="btn btn-primary shadow-sm">
+                <i class="fa-solid fa-plus me-1"></i> Tambah Buku
+            </a>
+        @endif
     </div>
 </div>
 
@@ -46,38 +48,57 @@
                 <thead class="table-dark">
                     <tr>
                         <th scope="col" style="width: 60px;" class="text-center">No</th>
+                        <th scope="col" style="width: 90px;" class="text-center">Cover</th>
                         <th scope="col">Judul Buku</th>
                         <th scope="col">Penulis</th>
                         <th scope="col">Harga</th>
                         <th scope="col">Tgl. Terbit</th>
-                        <th scope="col" style="width: 160px;" class="text-center">Aksi</th>
+                        <th scope="col" style="width: 200px;" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($data_buku as $buku)
                         <tr>
                             <td class="text-center">{{ ++$no }}</td>
-                            <td class="fw-semibold">{{ $buku->judul }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('buku.show', $buku->id) }}" title="Lihat detail {{ $buku->judul }}">
+                                    @if ($buku->cover)
+                                        <img src="{{ asset('storage/' . $buku->cover) }}" alt="{{ $buku->judul }}" class="img-thumbnail rounded shadow-sm" style="width: 50px; height: 65px; object-fit: cover;">
+                                    @else
+                                        <span class="badge bg-secondary">No Cover</span>
+                                    @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ route('buku.show', $buku->id) }}" class="fw-semibold text-decoration-none text-dark hover-primary" title="Lihat detail">
+                                    {{ $buku->judul }}
+                                </a>
+                            </td>
                             <td>{{ $buku->penulis }}</td>
                             {{-- Format Rupiah dengan number_format (Latihan 1) --}}
                             <td>Rp {{ number_format($buku->harga, 0, ',', '.') }}</td>
                             {{-- Format Tanggal Indonesia d/m/Y via Carbon (Latihan 1) --}}
                             <td>{{ $buku->tgl_terbit->format('d/m/Y') }}</td>
                             <td class="text-center">
-                                <a href="{{ route('buku.edit', $buku->id) }}" class="btn btn-sm btn-warning text-dark me-1" title="Edit">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                <a href="{{ route('buku.show', $buku->id) }}" class="btn btn-sm btn-info text-white me-1" title="Detail">
+                                    <i class="fa-solid fa-eye"></i> Detail
                                 </a>
-                                <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                        <i class="fa-solid fa-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                @if(Auth::user()->level === 'admin')
+                                    <a href="{{ route('buku.edit', $buku->id) }}" class="btn btn-sm btn-warning text-dark me-1" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </a>
+                                    <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                            <i class="fa-solid fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">Belum ada data buku.</td>
+                            <td colspan="7" class="text-center py-4 text-muted">Belum ada data buku.</td>
                         </tr>
                     @endforelse
                 </tbody>

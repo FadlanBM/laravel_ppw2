@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
@@ -22,6 +23,16 @@ class BukuController extends Controller
     }
 
     /**
+     * Menampilkan halaman detail satu buku.
+     */
+    public function show(string $id)
+    {
+        $buku = Buku::findOrFail($id);
+
+        return view('buku.show', compact('buku'));
+    }
+
+    /**
      * Menampilkan form penambahan buku baru.
      */
     public function create()
@@ -30,7 +41,7 @@ class BukuController extends Controller
     }
 
     /**
-     * Menyimpan data buku baru dengan validasi berbahasa Indonesia dan flash message.
+     * Menyimpan data buku baru dengan validasi berbahasa Indonesia, upload cover, dan flash message.
      */
     public function store(Request $request)
     {
@@ -44,6 +55,9 @@ class BukuController extends Controller
             'harga.numeric' => 'Harga buku harus berupa angka.',
             'tgl_terbit.required' => 'Tanggal terbit buku wajib diisi.',
             'tgl_terbit.date' => 'Format tanggal terbit tidak valid.',
+            'cover.image' => 'Berkas cover harus berupa gambar.',
+            'cover.mimes' => 'Format cover harus JPG, JPEG, atau PNG.',
+            'cover.max' => 'Ukuran cover maksimal 2 MB.',
         ];
 
         $request->validate([
@@ -51,13 +65,19 @@ class BukuController extends Controller
             'penulis' => 'required|string|max:30',
             'harga' => 'required|numeric',
             'tgl_terbit' => 'required|date',
+            'cover' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ], $messages);
 
-        $buku = new Buku();
+        $buku = new Buku;
         $buku->judul = $request->judul;
         $buku->penulis = $request->penulis;
         $buku->harga = $request->harga;
         $buku->tgl_terbit = $request->tgl_terbit;
+
+        if ($request->hasFile('cover')) {
+            $buku->cover = $request->file('cover')->store('covers', 'public');
+        }
+
         $buku->save();
 
         return redirect('/buku')->with('pesan', 'Data buku berhasil disimpan');
@@ -74,7 +94,7 @@ class BukuController extends Controller
     }
 
     /**
-     * Memperbarui data buku dengan validasi dan flash message.
+     * Memperbarui data buku dengan validasi, pembaruan cover jika ada, dan flash message.
      */
     public function update(Request $request, string $id)
     {
@@ -88,6 +108,9 @@ class BukuController extends Controller
             'harga.numeric' => 'Harga buku harus berupa angka.',
             'tgl_terbit.required' => 'Tanggal terbit buku wajib diisi.',
             'tgl_terbit.date' => 'Format tanggal terbit tidak valid.',
+            'cover.image' => 'Berkas cover harus berupa gambar.',
+            'cover.mimes' => 'Format cover harus JPG, JPEG, atau PNG.',
+            'cover.max' => 'Ukuran cover maksimal 2 MB.',
         ];
 
         $request->validate([
@@ -95,6 +118,7 @@ class BukuController extends Controller
             'penulis' => 'required|string|max:30',
             'harga' => 'required|numeric',
             'tgl_terbit' => 'required|date',
+            'cover' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ], $messages);
 
         $buku = Buku::findOrFail($id);
@@ -102,17 +126,30 @@ class BukuController extends Controller
         $buku->penulis = $request->penulis;
         $buku->harga = $request->harga;
         $buku->tgl_terbit = $request->tgl_terbit;
+
+        if ($request->hasFile('cover')) {
+            if ($buku->cover && Storage::disk('public')->exists($buku->cover)) {
+                Storage::disk('public')->delete($buku->cover);
+            }
+            $buku->cover = $request->file('cover')->store('covers', 'public');
+        }
+
         $buku->save();
 
         return redirect('/buku')->with('pesan', 'Data buku berhasil diubah');
     }
 
     /**
-     * Menghapus data buku dan mengirim flash message konfirmasi.
+     * Menghapus data buku beserta cover yang tersimpan dan mengirim flash message konfirmasi.
      */
     public function destroy(string $id)
     {
         $buku = Buku::findOrFail($id);
+
+        if ($buku->cover && Storage::disk('public')->exists($buku->cover)) {
+            Storage::disk('public')->delete($buku->cover);
+        }
+
         $buku->delete();
 
         return redirect('/buku')->with('pesan', 'Data buku berhasil dihapus');

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
-use App\Http\Controllers\JobController;
 use App\Http\Controllers\MencobaController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -32,26 +31,26 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// Rute Terproteksi Middleware 'auth' (Dapat diakses oleh level 'admin' dan 'user')
+// Rute Terproteksi Middleware 'auth' (Dapat diakses oleh level 'admin' dan 'user' - View Only untuk User)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // Modul Data Buku (Pertemuan 8: Fitur Pelengkap CRUD)
-    Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
+    // Modul Data Buku: Tampilan katalog, pencarian, dan detail dapat dilihat oleh semua pengguna
     Route::get('/buku', [BukuController::class, 'index'])->name('buku.index');
-    Route::get('/buku/create', [BukuController::class, 'create'])->name('buku.create');
-    Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
-    Route::get('/buku/edit/{id}', [BukuController::class, 'edit'])->name('buku.edit');
-    Route::post('/buku/update/{id}', [BukuController::class, 'update'])->name('buku.update');
-    Route::post('/buku/delete/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
+    Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
+    Route::get('/buku/{id}', [BukuController::class, 'show'])->whereNumber('id')->name('buku.show');
 });
 
 // Rute Terproteksi Middleware 'admin' (Hanya dapat diakses oleh pengguna level 'admin')
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('users', UserController::class);
-});
 
-// Pertemuan 3: CRUD Lowongan Kerja dengan Upload Logo Perusahaan
-Route::resource('jobs', JobController::class)->middleware(['auth', 'isAdmin']);
+    // Operasi Perubahan Data Buku (Tambah, Edit, Hapus): Khusus Admin
+    Route::get('/buku/create', [BukuController::class, 'create'])->name('buku.create');
+    Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
+    Route::get('/buku/edit/{id}', [BukuController::class, 'edit'])->whereNumber('id')->name('buku.edit');
+    Route::post('/buku/update/{id}', [BukuController::class, 'update'])->whereNumber('id')->name('buku.update');
+    Route::post('/buku/delete/{id}', [BukuController::class, 'destroy'])->whereNumber('id')->name('buku.destroy');
+});

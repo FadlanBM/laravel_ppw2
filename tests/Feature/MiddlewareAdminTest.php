@@ -11,6 +11,7 @@ class MiddlewareAdminTest extends TestCase
     use RefreshDatabase;
 
     protected User $adminUser;
+
     protected User $regularUser;
 
     protected function setUp(): void
