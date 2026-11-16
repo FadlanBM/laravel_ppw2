@@ -1,4 +1,8 @@
-# Praktikum Pemrograman Web 2 (PPW-2) — Pertemuan 3: File Upload (CRUD Lowongan Kerja)
+# Praktikum Pemrograman Web 2 (PPW-2): Books Gallery dan SEO
+
+Modul terbaru: **Books Gallery + SEO**, branch `pertemuan_11`. Panduan lengkap, batas tanpa deploy/tanpa pull dev, instalasi, rute, dan bukti pengujian: [documentation/BOOKS.md](documentation/BOOKS.md).
+
+## Modul sebelumnya: Pertemuan 3 File Upload (CRUD Lowongan Kerja)
 
 Repositori ini memuat implementasi proyek praktikum mata kuliah **Pemrograman Web 2 (PPW / PPWL)** pada Program Studi D-IV Teknologi Rekayasa Perangkat Lunak, Departemen Teknik Elektro dan Informatika, Sekolah Vokasi, Universitas Gadjah Mada.
 

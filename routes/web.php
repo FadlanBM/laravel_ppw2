@@ -13,6 +13,12 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
+Route::get('/gallery', [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
+Route::resource('gallery', \App\Http\Controllers\GalleryController::class)->except(['index', 'show'])->middleware(['auth', 'admin']);
+Route::post('/books/{buku}/cover', [\App\Http\Controllers\BooksCatalogController::class, 'cover'])->middleware(['auth', 'admin'])->name('books.cover');
+Route::get('/list-buku', [\App\Http\Controllers\BooksCatalogController::class, 'index'])->name('books.catalog');
+Route::get('/detail-buku/{title}', [\App\Http\Controllers\BooksCatalogController::class, 'show'])->name('galeri.buku');
+
 // Pertemuan 5: Controller & Migration
 Route::get('/coba', [MencobaController::class, 'boomesport']);
 Route::resource('/post', PostController::class);

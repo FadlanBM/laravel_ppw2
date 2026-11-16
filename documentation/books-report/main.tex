@@ -1,0 +1,276 @@
+% !TeX program = xelatex
+\documentclass[a4paper,oneside,12pt]{book}
+
+% Package dasar
+\usepackage{fontspec}
+
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage[indonesian]{babel}
+\usepackage{titlesec}
+\usepackage{csquotes}
+
+\usepackage{geometry}           % untuk margin
+\usepackage{setspace}           % untuk spasi baris
+\usepackage{fancyhdr}           % untuk header/footer
+\usepackage{xurl}               % untuk pemenggalan URL otomatis
+\usepackage{hyperref}           % untuk link dan bookmark
+\usepackage{listings}           % untuk code Java/Python
+\usepackage{xcolor}             % untuk warna
+\usepackage{float}              % untuk posisi gambar
+\usepackage{tocloft}            % Untuk membuat daftar isi menampilkan "Bab 1. Pendahuluan" instead of "1. Pendahuluan"
+             % untuk lorem ipsum
+\usepackage{indentfirst}        % untuk indent paragraf pertama
+\usepackage{enumitem}
+\setmainfont{texgyretermes}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\setmonofont{texgyrecursor}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,Scale=0.9]
+
+% Pengaturan biblatex
+\usepackage[style=numeric,sorting=none,backend=biber]{biblatex}
+\addbibresource{latex_modules/citace.bib}
+
+\usepackage{array}
+\geometry{left=3cm, right=2cm, top=2cm, bottom=2cm}
+\onehalfspacing
+
+% Definisi bahasa Kotlin untuk package listings
+\lstdefinelanguage{Kotlin}{
+  keywords={abstract, actual, as, as?, break, by, catch, class, companion, const, constructor, continue, crossinline, data, delegate, dynamic, do, else, enum, expect, external, false, final, finally, for, fun, get, if, import, in, infix, init, inline, inner, interface, internal, is, lateinit, noinline, null, object, open, operator, out, override, package, private, protected, public, reified, return, sealed, set, super, suspend, tailrec, this, throw, true, try, typealias, typeof, val, var, vararg, when, where, while},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={Int, Double, Float, String, Boolean, Char, Byte, Short, Long, List, Array, Unit, Any},
+  ndkeywordstyle=\color{teal}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]",
+  morestring=[s]{"""*}{*"""}
+}
+
+% Format code dan general listings
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    xleftmargin=0.6cm,
+    xrightmargin=0cm,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red}
+}
+
+% Pengaturan hyperref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Laporan Praktikum}
+\fancyhead[R]{Praktikum Pemrograman Web 2}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{15pt}
+
+% Info dokumen
+\title{   
+    LAPORAN PRAKTIKUM\\ 
+    PEMROGRAMAN WEB 2\\
+    GALLERY DAN PENGGUNAAN SEO\\
+    STUDI KASUS WEBSITE BOOKS
+}
+\author{
+    Nama Mahasiswa: Fadlan Buwono Mukti \\
+    NIM: 25/565721/SV/26984
+}
+
+% Daftar Isi
+\renewcommand{\cfttoctitlefont}{\hfill\normalfont\Large\bfseries}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\cftbeforetoctitleskip}{0pt}
+\renewcommand{\cftaftertoctitleskip}{20pt}
+\renewcommand{\cftchappresnum}{BAB }
+\renewcommand{\cftchapaftersnum}{.}
+\renewcommand{\cftchapnumwidth}{3.7em}
+
+% Format chapter
+\renewcommand{\chaptertitlename}{BAB}
+\titleformat{\chapter}[hang]
+  {\normalfont\Large\bfseries\centering}{\chaptertitlename\ \thechapter.}{1em}{}
+\titlespacing*{\chapter}{0pt}{20pt}{40pt}
+
+% Format section
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\hspace{1.6em}\thesubsection}{1em}{}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+
+% Gambar hasil kode sumber langsung dari project Laravel
+\newcommand{\codefigure}[2]{%
+    \begin{figure}[H]%
+        \centering
+        \includegraphics[width=\linewidth]{#1}%
+        \caption{#2}%
+    \end{figure}%
+}
+
+\usepackage{caption}
+\captionsetup{labelsep=colon}
+\setlength{\emergencystretch}{3em}
+\newcommand{\proofimage}[2]{\begin{figure}[H]\centering\includegraphics[width=\linewidth,height=12cm,keepaspectratio]{assets/#1}\caption{#2}\end{figure}}
+\begin{document}
+
+% Title Page
+\begin{titlingpage}
+\newgeometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+
+\begin{center}
+\begin{normalsize} 
+\linespread{1.15}\selectfont
+\textbf{\thetitle} \\
+\end{normalsize}
+
+\vspace{1.4cm} 
+\includegraphics[height=6.5cm]{assets/logo.png}\\ 
+\vspace{1.4cm} 
+
+
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{} l l @{}}
+Nama           & : Fadlan Buwono Mukti\\
+NIM            & : 25/565721/SV/26984\\
+Kelas          & : A1 \\
+Dosen Pengampu & : Ir. Dinar Nugroho Pratomo, S.Kom., M.IM., M.Cs. \\
+\end{tabular}
+\vspace{1.4cm}
+
+\begin{normalsize}
+\linespread{1.15}\selectfont
+\textbf{PROGRAM STUDI D-IV TEKNOLOGI REKAYASA PERANGKAT LUNAK}\\
+\textbf{DEPARTEMEN TEKNIK ELEKTRO DAN INFORMATIKA}\\
+\textbf{SEKOLAH VOKASI}\\
+\textbf{UNIVERSITAS GADJAH MADA}\\
+\textbf{YOGYAKARTA}\\
+\textbf{2026}\\
+\end{normalsize}
+
+\end{center}
+
+\restoregeometry
+\end{titlingpage}
+
+% Daftar Isi
+\renewcommand{\contentsname}{DAFTAR ISI}
+\pagenumbering{roman}\tableofcontents\clearpage\pagenumbering{arabic}
+
+\chapter{Tujuan Praktikum}
+Praktikum menggabungkan materi Gallery dan BAB X Penggunaan SEO pada studi kasus website Books. Bagian BAB XI Deploy Project tidak dikerjakan sesuai instruksi. Pekerjaan dimulai dari commit lokal 560be67 pada repositori Laravel sebelumnya, tanpa pull, fetch, atau merge dari branch dev. Branch hasil bernama pertemuan\_11 mengikuti instruksi pada materi Gallery; nama branch tidak mengubah penamaan BAB X pada materi SEO.
+\begin{enumerate}
+\item Membuat katalog buku yang menampilkan foto sampul, judul, penulis, dan harga.
+\item Menambahkan kolom buku\_seo dan foto pada tabel buku yang sudah ada.
+\item Menghubungkan satu buku dengan banyak foto melalui relasi photos().
+\item Mengimplementasikan upload, edit, penggantian gambar, dan penghapusan foto galeri.
+\item Menggunakan Lightbox2 untuk membuka gambar detail dalam kelompok galeri.
+\item Menguji aplikasi secara otomatis dan melalui browser nyata, tanpa deployment.
+\end{enumerate}
+\chapter{Dasar Teori}
+\section{Slug SEO dan URL Detail}
+Modul menggunakan istilah SEO untuk membentuk URL detail berdasarkan judul buku, misalnya /detail-buku/bumi-cinta\cite{modulSeo}. Slug mengubah teks menjadi karakter yang sesuai untuk jalur URL. Ini bukan keseluruhan optimasi mesin pencari. Implementasi juga memberi title, meta description, dan canonical, tetapi laporan tidak mengklaim peningkatan peringkat pencarian karena tidak ada pengukuran indeks maupun trafik.
+Slug disimpan dengan indeks unik. Dua judul sama memperoleh suffix agar tidak menunjuk detail yang ambigu. Slug tetap dipertahankan ketika judul berubah, sehingga URL lama tidak rusak tanpa sengaja.
+\section{Relasi Buku dan Galeri}
+Eloquent menyediakan hasMany dan belongsTo untuk memetakan relasi satu-ke-banyak\cite{eloquent}. Satu baris books dapat memiliki banyak book\_photos. Foreign key buku\_id menunjuk books.id. Materi Gallery memakai posts; pada studi kasus ini entitas itu diadaptasi menjadi BookPhoto agar satu galeri selalu berhubungan dengan buku, bukan membuat modul postingan yang terpisah\cite{modulGallery}.
+\section{Upload dan Penyimpanan Berkas}
+Form multipart membawa gambar ke server, lalu validasi membatasi jenis berkas dan ukuran. Disk public menyimpan jalur relatif yang diakses melalui public/storage hasil storage:link\cite{storage}. Basis data tidak menyimpan isi biner gambar. Konsistensi antara baris data dan berkas perlu dijaga ketika upload diganti atau data dihapus.
+\section{Lightbox2}
+Lightbox2 menggunakan atribut data-lightbox untuk mengelompokkan tautan gambar\cite{lightbox}. Pengguna membuka gambar besar tanpa meninggalkan halaman dan berpindah ke gambar berikutnya. Pustaka versi 2.11.5 disimpan lokal beserta aset pendukung dan lisensi, sehingga tampilan Books tidak bergantung pada CDN untuk plugin ini.
+\chapter{Hasil dan Pembahasan}
+Implementasi berjalan di server pengembangan lokal Laravel. Screenshot berikut merupakan tangkapan Playwright dari aplikasi yang benar-benar dirender dan diuji, bukan dummy. Sampul dan foto yang dipakai sebagai data seeder merupakan ilustrasi praktikum buatan; bukan foto atau sampul resmi penerbit. Modul lama, termasuk autentikasi, buku, dan lowongan, tetap dipertahankan.
+\section{Pengerjaan Tugas Praktikum}
+\subsection{Kolom buku\_seo dan foto}
+Tabel buku pada proyek sebelumnya bernama books, sehingga nama itu dipertahankan. Migration tambahan menambahkan dua kolom yang diminta, melakukan backfill slug pada data lama, dan membuat tabel book\_photos. Tidak ada migrate:fresh pada database kerja.
+\lstinputlisting[language=PHP,caption={Migration buku SEO dan relasi galeri}]{code/2026_11_16_030000_add_books_seo_and_photos.php}
+\proofimage{12_sampul-sukses_20261116-021641.png}{Sampul buku diperbarui melalui formulir di halaman detail}
+Foto sampul diunggah lewat endpoint khusus admin. Jalur baru disimpan pada kolom foto. Berkas lama dihapus hanya setelah perubahan basis data selesai, sedangkan berkas baru dibersihkan jika penyimpanan basis data melempar exception. Nilai harga dan tanggal tetap memakai kolom dari modul sebelumnya.
+\subsection{Halaman list\_buku}
+Route publik /list-buku mengambil dua belas buku per halaman. Foto dan judul ditampilkan dalam kartu bertema Books, dengan warna hijau dan latar krem. Tombol menuju galeri mengirim buku\_seo, bukan ID numerik.
+\lstinputlisting[language=PHP,caption={View katalog buku dan tautan detail}]{code/catalog.blade.php}
+\proofimage{01_katalog_20261116-021641.png}{Katalog Books menampilkan foto, judul, penulis, harga, dan tautan galeri}
+Katalog terbuka tanpa login. Satu halaman menampilkan sebagian koleksi, sementara pagination menyediakan kelanjutannya. Pada pengujian tampilan mobile, lebar dokumen tidak melebihi viewport 390 piksel.
+\proofimage{13_mobile_20261116-021641.png}{Katalog Books pada viewport mobile 390 piksel}
+\subsection{Detail Buku dan Fungsi photos()}
+Route /detail-buku/\{title\} diberi nama galeri.buku sesuai materi. Parameter title berisi slug, lalu controller memakai firstOrFail agar slug tidak dikenal menghasilkan 404. Model Buku menyediakan photos() dengan foreign key eksplisit buku\_id.
+\lstinputlisting[language=PHP,caption={Model Buku, slug unik, dan relasi photos}]{code/Buku.php}
+\lstinputlisting[language=PHP,caption={Controller katalog, detail SEO, dan upload sampul}]{code/BooksCatalogController.php}
+\proofimage{02_detail-seo_20261116-021641.png}{Detail buku berdasarkan slug dan galeri yang hanya terkait dengan buku tersebut}
+Detail memuat metadata buku dan seluruh foto terkait yang picture-nya bukan NULL atau string kosong. Query relasi mencegah foto buku lain bercampur. Galeri kosong ditangani dengan pesan informatif, bukan gambar rusak.
+\subsection{Lightbox pada Galeri Detail}
+Layout memuat dist/css/lightbox.min.css dan dist/js/lightbox-plus-jquery.min.js. Kedua jalur lokal mengikuti pola dist pada modul SEO. Atribut data-lightbox berisi book-ID agar navigasi gambar tetap dalam satu buku, sedangkan daftar galeri umum memakai kelompok books-gallery.
+\lstinputlisting[language=PHP,caption={View detail dan atribut Lightbox per buku}]{code/detail.blade.php}
+\proofimage{03_lightbox_20261116-021641.png}{Overlay Lightbox menampilkan foto galeri dalam ukuran besar}
+Pengujian browser membuka foto, menekan navigasi next, memeriksa indikator gambar kedua, kemudian menutup overlay. Berhasilnya screenshot saja tidak cukup; assertion browser memastikan overlay benar-benar terlihat dan nomor gambar berubah.
+\subsection{Edit dan Delete Gambar}
+Tugas Gallery meminta fungsi mengganti serta menghapus gambar. Resource route dipakai untuk create, store, edit, update, dan destroy. index bersifat publik; operasi perubahan dilindungi auth dan admin. Form edit boleh dikirim tanpa gambar baru agar pengguna bisa mengubah deskripsi tanpa kehilangan file lama.
+\lstinputlisting[language=PHP,caption={Controller galeri dengan validasi dan pembersihan berkas}]{code/GalleryController.php}
+\proofimage{09_form-edit_20261116-021641.png}{Form edit foto menampilkan buku terkait, metadata, dan gambar lama}
+Pada update, controller menyimpan file baru lebih dahulu lalu memperbarui record. Jika pembaruan gagal, file baru dibersihkan. Jika berhasil, file lama dihapus. Pemisahan urutan ini menghindari menghapus foto lama sebelum data baru tersimpan.
+\proofimage{10_edit-sukses_20261116-021641.png}{Notifikasi sukses setelah judul dan gambar galeri diganti}
+Penghapusan memerlukan dialog konfirmasi pada browser. Controller menghapus record dan kemudian file pada disk public. Pengujian storage memeriksa bahwa jalur file yang diganti dan dihapus benar-benar hilang, bukan sekadar menghilang dari tampilan.
+\proofimage{11_hapus-sukses_20261116-021641.png}{Galeri setelah record dan berkas foto dihapus}
+\subsection{Tema Website dan Branch Tugas}
+Instruksi tema portofolio pada modul diadaptasi sesuai arahan pengguna menjadi website Books. Fokus visualnya katalog dan dokumentasi buku; tidak dibuat portofolio pribadi terpisah. Navigasi menghubungkan katalog, galeri, login pengelola, dan pengelolaan buku lama. Pengerjaan berada di branch pertemuan\_11, dibuat dari main lokal tanpa mengambil perubahan dev.
+\proofimage{04_galeri-publik_20261116-021641.png}{Halaman galeri umum bertema Books dengan kartu foto dan tautan buku}
+\section{Latihan Praktikum Modul Gallery}
+\subsection{Model dan Migration Galeri}
+Model BookPhoto menggantikan Post dalam penamaan domain studi kasus. Kolom title dibatasi 200 karakter, description berupa teks, dan picture berupa jalur file nullable. galeri\_seo menyimpan slug unik. buku\_id mengaitkan foto ke katalog, sementara cascade pada foreign key menjaga record foto tidak terlepas dari buku.
+\lstinputlisting[language=PHP,caption={Model foto dan relasi belongsTo}]{code/BookPhoto.php}
+\proofimage{04_galeri-publik_20261116-021641.png}{Foto pada galeri ditampilkan bersama judul buku induknya}
+\subsection{Query Foto dan Pagination}
+Query index memakai whereNotNull(picture), where picture tidak kosong, latest(id), dan paginate(30). with(buku) melakukan eager loading agar judul buku tidak memicu query tambahan untuk setiap kartu. Seed menyediakan dua foto untuk tiap buku sehingga halaman kedua benar-benar dapat diuji.
+\proofimage{05_pagination_20261116-021641.png}{Halaman kedua galeri melalui pagination tiga puluh foto per halaman}
+\subsection{Form Upload dan Dropdown Buku}
+Form tambah menggunakan multipart/form-data, token CSRF, dan dropdown buku. Judul serta deskripsi wajib diisi; gambar menerima JPG/JPEG/PNG maksimal 1999 KB. Berbeda dengan contoh noimage.png pada modul, upload baru diwajibkan agar setiap record yang baru dibuat benar-benar mempunyai gambar.
+\lstinputlisting[language=PHP,caption={Form tambah dan edit yang dipakai bersama}]{code/photo-form.blade.php}
+\proofimage{06_form-upload_20261116-021641.png}{Form upload dengan pilihan buku terkait dan pemilih file}
+Validasi diproses di server. Nilai lama dipertahankan saat gagal, dan ringkasan kesalahan tampil di atas form. Pemilihan format pada input hanyalah bantuan browser, bukan pengganti pemeriksaan isi berkas di server.
+\proofimage{07_validasi_20261116-021641.png}{Pesan validasi ketika form upload dikirim tanpa data wajib}
+\subsection{Penyimpanan dan Tampilan Hasil}
+UploadedFile.store menghasilkan nama acak pada books/gallery di disk public. Record menyimpan jalur itu tanpa path absolut mesin. Setelah penyimpanan, pengguna diarahkan ke galeri dengan notifikasi sukses. File yang dipakai untuk tes browser benar-benar diunggah melalui input file, bukan dimasukkan langsung ke tabel untuk mensimulasikan keberhasilan.
+\proofimage{08_upload-sukses_20261116-021641.png}{Foto baru muncul setelah form upload dikirim melalui browser}
+\section{Pengujian dan Analisis}
+Pengujian dilakukan pada dua lapisan. Pest memeriksa data, status HTTP, validasi, otorisasi, dan disk storage. Playwright menjalankan navigasi, Lightbox, pengisian form, pemilihan berkas, dialog hapus, dan tampilan mobile pada browser nyata.
+\begin{lstlisting}[caption={Hasil eksekusi pengujian otomatis},language={}]
+php artisan test --filter=BooksGalleryTest
+3 passed, 36 assertions
+
+php artisan test
+36 passed, 149 assertions
+
+Playwright Books
+13 screenshots, errors: []
+\end{lstlisting}
+\lstinputlisting[language=PHP,caption={Pengujian fitur Books dan galeri}]{code/BooksGalleryTest.php}
+Slug duplikat diuji dengan dua judul sama. Detail slug tidak ada diuji menghasilkan 404. Upload, penggantian dan penghapusan diuji menggunakan PNG fixture asli sehingga tidak bergantung pada ekstensi GD. Pengguna biasa ditolak 403 untuk perubahan data, sedangkan tamu diarahkan ke login. Pengujian tidak mengubah batas akses modul buku lama di luar fitur Books yang ditambahkan.
+Tiga belas screenshot bukti menyertai laporan; sebagian dipakai ulang pada pembahasan yang saling terkait. Semua diambil dari satu alur browser yang selesai. Tidak ada pageerror JavaScript atau respons 500 yang tercatat pada alur tersebut. Ini tidak berarti seluruh kemungkinan error aplikasi telah diuji.
+\chapter{Kesimpulan}
+\begin{enumerate}
+\item Website Books menggabungkan katalog, slug SEO, galeri terkait, dan Lightbox sesuai kedua materi yang diberikan.
+\item Relasi photos() dan buku\_id membatasi detail galeri pada buku yang dipilih; pengelolaan gambar memakai validasi dan pembersihan file.
+\item Edit dan delete disertai proteksi admin, sementara katalog dan galeri dapat dibaca publik.
+\item Semua 36 pengujian otomatis lulus dengan 149 assertion. Tiga belas screenshot asli mendokumentasikan hasil browser.
+\item BAB Deploy Project tidak dikerjakan. Tidak dilakukan pull/fetch/merge dev maupun deployment Heroku atau server lain.
+\end{enumerate}
+\printbibliography[heading=bibintoc,title={Daftar Pustaka}]
+\end{document}

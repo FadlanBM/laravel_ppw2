@@ -1,0 +1,32 @@
+{
+  "shots": [
+    "01_katalog_20261116-021641.png",
+    "02_detail-seo_20261116-021641.png",
+    "03_lightbox_20261116-021641.png",
+    "04_galeri-publik_20261116-021641.png",
+    "05_pagination_20261116-021641.png",
+    "06_form-upload_20261116-021641.png",
+    "07_validasi_20261116-021641.png",
+    "08_upload-sukses_20261116-021641.png",
+    "09_form-edit_20261116-021641.png",
+    "10_edit-sukses_20261116-021641.png",
+    "11_hapus-sukses_20261116-021641.png",
+    "12_sampul-sukses_20261116-021641.png",
+    "13_mobile_20261116-021641.png"
+  ],
+  "errors": [],
+  "scenarios": [
+    "catalog",
+    "slug detail",
+    "lightbox next/close",
+    "public gallery",
+    "pagination",
+    "login",
+    "validation",
+    "upload",
+    "replace",
+    "delete",
+    "cover upload",
+    "mobile no overflow"
+  ]
+}

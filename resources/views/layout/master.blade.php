@@ -22,6 +22,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="navbar-nav me-auto">
+                    <a class="nav-link" href="{{ route('books.catalog') }}">Books</a>
+                    <a class="nav-link" href="{{ route('gallery.index') }}">Galeri Buku</a>
                     @auth
                         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                             <i class="fa-solid fa-gauge me-1"></i> Dashboard
