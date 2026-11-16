@@ -198,7 +198,7 @@ Form multipart membawa gambar ke server, lalu validasi membatasi jenis berkas da
 Lightbox2 menggunakan atribut data-lightbox untuk mengelompokkan tautan gambar\cite{lightbox}. Pengguna membuka gambar besar tanpa meninggalkan halaman dan berpindah ke gambar berikutnya. Pustaka versi 2.11.5 disimpan lokal beserta aset pendukung dan lisensi, sehingga tampilan Books tidak bergantung pada CDN untuk plugin ini.
 \chapter{Hasil dan Pembahasan}
 Implementasi berjalan di server pengembangan lokal Laravel. Screenshot berikut merupakan tangkapan Playwright dari aplikasi yang benar-benar dirender dan diuji, bukan dummy. Sampul dan foto yang dipakai sebagai data seeder merupakan ilustrasi praktikum buatan; bukan foto atau sampul resmi penerbit. Modul lama, termasuk autentikasi, buku, dan lowongan, tetap dipertahankan.
-\section{Pengerjaan Tugas Praktikum}
+\section{Pengerjaan Tugas Penggunaan SEO}
 \subsection{Kolom buku\_seo dan foto}
 Tabel buku pada proyek sebelumnya bernama books, sehingga nama itu dipertahankan. Migration tambahan menambahkan dua kolom yang diminta, melakukan backfill slug pada data lama, dan membuat tabel book\_photos. Tidak ada migrate:fresh pada database kerja.
 \lstinputlisting[language=PHP,caption={Migration buku SEO dan relasi galeri}]{code/2026_11_16_030000_add_books_seo_and_photos.php}
@@ -221,7 +221,9 @@ Layout memuat dist/css/lightbox.min.css dan dist/js/lightbox-plus-jquery.min.js.
 \lstinputlisting[language=PHP,caption={View detail dan atribut Lightbox per buku}]{code/detail.blade.php}
 \proofimage{03_lightbox_20261116-021641.png}{Overlay Lightbox menampilkan foto galeri dalam ukuran besar}
 Pengujian browser membuka foto, menekan navigasi next, memeriksa indikator gambar kedua, kemudian menutup overlay. Berhasilnya screenshot saja tidak cukup; assertion browser memastikan overlay benar-benar terlihat dan nomor gambar berubah.
-\subsection{Edit dan Delete Gambar}
+\section{Pengerjaan Tugas Praktikum Gallery}
+Bagian ini menjawab ketiga butir pada bagian Tugas modul Gallery, bukan hanya mengulang langkah latihan. Implementasi edit dan delete telah tersedia pada website yang diuji, tema disesuaikan dengan studi kasus Books sesuai arahan pengguna, dan kode dikumpulkan melalui branch pertemuan\_11\cite{modulGallery}.
+\subsection{Tugas 1: Fungsi Edit dan Delete untuk Mengganti dan Menghapus Gambar}
 Tugas Gallery meminta fungsi mengganti serta menghapus gambar. Resource route dipakai untuk create, store, edit, update, dan destroy. index bersifat publik; operasi perubahan dilindungi auth dan admin. Form edit boleh dikirim tanpa gambar baru agar pengguna bisa mengubah deskripsi tanpa kehilangan file lama.
 \lstinputlisting[language=PHP,caption={Controller galeri dengan validasi dan pembersihan berkas}]{code/GalleryController.php}
 \proofimage{09_form-edit_20261116-021641.png}{Form edit foto menampilkan buku terkait, metadata, dan gambar lama}
@@ -229,9 +231,19 @@ Pada update, controller menyimpan file baru lebih dahulu lalu memperbarui record
 \proofimage{10_edit-sukses_20261116-021641.png}{Notifikasi sukses setelah judul dan gambar galeri diganti}
 Penghapusan memerlukan dialog konfirmasi pada browser. Controller menghapus record dan kemudian file pada disk public. Pengujian storage memeriksa bahwa jalur file yang diganti dan dihapus benar-benar hilang, bukan sekadar menghilang dari tampilan.
 \proofimage{11_hapus-sukses_20261116-021641.png}{Galeri setelah record dan berkas foto dihapus}
-\subsection{Tema Website dan Branch Tugas}
-Instruksi tema portofolio pada modul diadaptasi sesuai arahan pengguna menjadi website Books. Fokus visualnya katalog dan dokumentasi buku; tidak dibuat portofolio pribadi terpisah. Navigasi menghubungkan katalog, galeri, login pengelola, dan pengelolaan buku lama. Pengerjaan berada di branch pertemuan\_11, dibuat dari main lokal tanpa mengambil perubahan dev.
-\proofimage{04_galeri-publik_20261116-021641.png}{Halaman galeri umum bertema Books dengan kartu foto dan tautan buku}
+\subsection{Tugas 2: Penerapan Tema Website pada Studi Kasus Books}
+Instruksi tema portofolio pada modul diadaptasi sesuai arahan pengguna menjadi website Books. Fokus visualnya katalog dan dokumentasi buku; tidak dibuat portofolio pribadi terpisah. Layout bersama mengatur warna hijau tua, latar krem, tipografi judul serif, kartu foto, serta navigasi katalog dan galeri. Tema dipakai konsisten pada form tambah, form edit, detail buku, dan galeri sehingga pengguna tidak berpindah ke tampilan yang berbeda saat mengelola foto.
+\lstinputlisting[language=PHP,caption={Layout dan styling bersama untuk tema Books}]{code/layout.blade.php}
+\proofimage{04_galeri-publik_20261116-021641.png}{Penerapan tema Books pada galeri sebagai jawaban tugas tema website}
+Kartu galeri menampilkan foto, judul, deskripsi, dan buku induk. Tombol Edit dan Hapus hanya tersedia bagi admin, sedangkan pembaca tetap dapat membuka foto melalui Lightbox dan menuju detail buku. Tampilan responsif juga diperiksa pada katalog mobile sebagaimana bukti sebelumnya.
+\subsection{Tugas 3: Pengumpulan Kode melalui Branch pertemuan\_11}
+Kode implementasi telah di-push ke branch yang diminta oleh modul. Branch dibuat dari main lokal, bukan hasil pull atau merge dev. Push GitHub untuk pengumpulan sumber berbeda dari deployment; bagian Heroku dan perubahan server tetap tidak dikerjakan.
+\begin{lstlisting}[language={},caption={Identitas branch dan commit implementasi yang terverifikasi pada remote}]
+Branch: pertemuan_11
+Commit implementasi: ee059578a97c751dab9391d7285cf8e80fa1c9fb
+\end{lstlisting}
+Repositori pengumpulan dapat dibuka pada \url{https://github.com/FadlanBM/laravel_ppw2/tree/pertemuan_11}. Commit di atas memuat implementasi yang menjadi dasar screenshot dan pengujian. Revisi laporan ini tidak mengubah fitur aplikasi.
+\proofimage{08_upload-sukses_20261116-021641.png}{Hasil implementasi galeri Books yang disertakan bersama sumber pada branch tugas}
 \section{Latihan Praktikum Modul Gallery}
 \subsection{Model dan Migration Galeri}
 Model BookPhoto menggantikan Post dalam penamaan domain studi kasus. Kolom title dibatasi 200 karakter, description berupa teks, dan picture berupa jalur file nullable. galeri\_seo menyimpan slug unik. buku\_id mengaitkan foto ke katalog, sementara cascade pada foreign key menjaga record foto tidak terlepas dari buku.
